@@ -200,21 +200,16 @@ const fetchJson = (endpoint) =>
     return response.json();
   });
 
-const isHomeLikeRoute = (path = "") => {
-  if (!path) return false;
-  return path === "/" || path.startsWith("/categories");
-};
-
 export default apiInitializer("0.11.3", (api) => {
   const mountHome = () => {
     const path = window.location.pathname || "/";
     const mount = document.querySelector("#gh-home-mount");
-    const tpl = document.getElementById("gh-home-template");
-    const isHome = isHomeLikeRoute(path);
+    const source = document.querySelector("#gh-home-template-source");
+    const isHome = path === "/" || path.startsWith("/categories");
 
     document.body.classList.toggle("gh-home-active", isHome);
 
-    if (!isHome || !mount || !tpl) {
+    if (!isHome || !mount || !source) {
       if (mount) {
         mount.innerHTML = "";
       }
@@ -222,7 +217,7 @@ export default apiInitializer("0.11.3", (api) => {
     }
 
     if (!mount.querySelector(".gh-home")) {
-      mount.innerHTML = tpl.innerHTML;
+      mount.innerHTML = source.innerHTML;
     }
 
     return mount.querySelector(".gh-home");
