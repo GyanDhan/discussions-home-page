@@ -200,6 +200,19 @@ const fetchJson = (endpoint) =>
     return response.json();
   });
 
+const ensureMount = () => {
+  let mount = document.querySelector("#gh-home-mount");
+  if (!mount) {
+    mount = document.createElement("div");
+    mount.id = "gh-home-mount";
+    mount.style.display = "none";
+    const outlet = document.querySelector("#main-outlet");
+    const parent = outlet?.parentNode || document.body;
+    parent.insertBefore(mount, outlet || parent.firstChild);
+  }
+  return mount;
+};
+
 export default apiInitializer("0.11.3", (api) => {
   const buildHomeHtml = () => {
     const s = settings;
@@ -358,15 +371,18 @@ export default apiInitializer("0.11.3", (api) => {
 
   const mountHome = () => {
     const path = window.location.pathname || "/";
-    const mount = document.querySelector("#gh-home-mount");
+    const mount = ensureMount();
+    const outlet = document.querySelector("#main-outlet");
     const isHome = path === "/" || path.startsWith("/categories");
 
     document.body.classList.toggle("gh-home-active", isHome);
+    if (outlet) {
+      outlet.style.display = isHome ? "none" : "";
+    }
+    mount.style.display = isHome ? "block" : "none";
 
     if (!isHome || !mount) {
-      if (mount) {
-        mount.innerHTML = "";
-      }
+      mount.innerHTML = "";
       return null;
     }
 
