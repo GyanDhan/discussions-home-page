@@ -200,18 +200,34 @@
 }
 
 .gh-card--person {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 8px;
+  display: flex;
+  gap: 10px;
   align-items: center;
 }
 
 .gh-avatar {
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: var(--gh-border);
   object-fit: cover;
+}
+
+.gh-person__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gh-person__title {
+  margin: 0;
+  color: var(--gh-subtext);
+  font-size: 13px;
+}
+
+.gh-person__name {
+  font-weight: 700;
+  margin: 0;
 }
 
 .gh-chip {

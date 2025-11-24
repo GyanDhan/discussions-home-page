@@ -12,10 +12,12 @@ This component targets the Discourse Air theme and adds a custom landing block t
 - `settings.yml` – copy/CTA/stat text and endpoints/toggles.
 - `common/common.scss` – styles for the landing block.
 - `javascripts/discourse/templates/connectors/discovery-categories-top/gh-landing*.hbs` – mounts the landing block at the top of the categories page.
+- `javascripts/discourse/templates/connectors/discovery-list-container-top/gh-landing*.hbs` – fallback mount for other discovery layouts.
 - `javascripts/discourse/initializers/home-landing.js` – builds markup from settings, fetches endpoints, and hydrates sections.
 
 ## Settings / data
-- Default endpoints: `latest_endpoint = /latest.json`, `categories_endpoint = /categories.json`; others are blank so you can point them to Data Explorer or external APIs.
+- Default endpoints: `latest_endpoint = /latest.json`, `categories_endpoint = /categories.json`, `most_talked_endpoint = /top.json`; others are blank so you can point them to Data Explorer or external APIs.
+- `categories_limit` (default 6) and `categories_slugs` let you cap/curate category tiles.
 - Do not store API keys in settings; use a proxy if needed.
 
 ## Usage

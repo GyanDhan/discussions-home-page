@@ -41,7 +41,7 @@ const renderAlumni = (block, alumni) => {
       return `
         <article class="gh-card gh-card--person">
           <img class="gh-avatar" src="${avatarUrl}" alt="${name}">
-          <div>
+          <div class="gh-person__meta">
             <p class="gh-person__name">${name}</p>
             <p class="gh-person__title">${title}</p>
             <p class="gh-card__meta">${university}</p>
@@ -146,7 +146,7 @@ const renderCategories = (block, categories) => {
     return;
   }
 
-  const chips = categories.slice(0, 12).map((cat) => {
+  const chips = categories.map((cat) => {
     const name = escapeHtml(cat.name || "Category");
     const href = cat.url || `/c/${cat.slug}/${cat.id}`;
     return `<a class="gh-chip" href="${href}">${name}</a>`;
@@ -197,6 +197,28 @@ const isLandingRoute = () => {
   return path === "" || path === "/" || path === "/categories";
 };
 
+const filterCategories = (cats, s) => {
+  const limit = Number(s.categories_limit || 6) || 6;
+  const slugsRaw = s.categories_slugs || [];
+  const allowlist = Array.isArray(slugsRaw)
+    ? slugsRaw
+    : String(slugsRaw || "")
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean);
+
+  let filtered = cats || [];
+  if (allowlist.length) {
+    filtered = filtered.filter(
+      (c) =>
+        allowlist.includes(String(c.slug)) ||
+        allowlist.includes(String(c.id)) ||
+        allowlist.includes(String(c.name))
+    );
+  }
+  return filtered.slice(0, limit);
+};
+
 const buildHomeHtml = (s) => {
   const stat1 = escapeHtml(s.hero_stat_1 || "");
   const stat2 = escapeHtml(s.hero_stat_2 || "");
@@ -205,7 +227,7 @@ const buildHomeHtml = (s) => {
   const hero = `
     <section class="gh-hero">
       <div class="gh-hero__copy">
-        <p class="gh-hero__eyebrow">For future admits</p>
+        <p class="gh-hero__eyebrow">GD Connect</p>
         <h1>${escapeHtml(s.hero_title || "")}</h1>
         <p class="gh-hero__subtitle">${escapeHtml(s.hero_subtitle || "")}</p>
         <div class="gh-hero__actions">
@@ -374,7 +396,13 @@ export default apiInitializer("0.11.3", (api) => {
           }
           return response.json();
         })
-        .then((data) => renderer(wrapper, normalize(data)))
+        .then((data) => {
+          if (blockName === "categories") {
+            renderer(wrapper, filterCategories(normalize(data), settings));
+          } else {
+            renderer(wrapper, normalize(data));
+          }
+        })
         .catch(() => renderEmpty(wrapper, "We could not load this section right now."));
     });
   };

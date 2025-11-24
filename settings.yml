@@ -1,17 +1,17 @@
 hero_title:
   default: "Real alumni advice, actual results"
 hero_subtitle:
-  default: "Connect with alumni, explore popular courses, and attend curated events."
+  default: "Get guidance from real alumni. See what worked for them, and plan your path with confidence."
 cta_primary_label:
-  default: "Explore Discussions"
+  default: "Create free account"
 cta_primary_url:
-  default: "/latest"
-cta_secondary_label:
-  default: "Join the Community"
-cta_secondary_url:
   default: "/signup"
+cta_secondary_label:
+  default: "Browse alumni"
+cta_secondary_url:
+  default: "/u"
 hero_stat_1:
-  default: "4k+ Alumni"
+  default: "4.2k+ Alumni"
 hero_stat_2:
   default: "200+ Universities"
 hero_stat_3:
@@ -25,7 +25,7 @@ show_most_talked:
   type: bool
   default: true
 most_talked_endpoint:
-  default: ""
+  default: "/top.json"
 show_latest:
   type: bool
   default: true
@@ -46,3 +46,13 @@ show_categories:
   default: true
 categories_endpoint:
   default: "/categories.json"
+
+categories_limit:
+  type: integer
+  default: 6
+  description: "Max number of categories to display."
+
+categories_slugs:
+  type: list
+  default: ""
+  description: "Optional list of category slugs or IDs to include (max 6). Leave empty to use default ordering."
