@@ -1,9 +1,7 @@
 {
-  "name": "GyanDhan Discussions Home",
+  "name": "Air Home Landing",
   "about_url": "https://discussions.gyandhan.com",
   "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
   "component": true,
-  "modifiers": {
-    "top_menu": ["home"]
-  }
+  "dependencies": ["discourse-air"]
 }

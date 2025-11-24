@@ -1,79 +1,48 @@
 hero_title:
   default: "Real alumni advice, actual results"
-
 hero_subtitle:
   default: "Connect with alumni, explore popular courses, and attend curated events."
-
 cta_primary_label:
   default: "Explore Discussions"
-
 cta_primary_url:
   default: "/latest"
-
 cta_secondary_label:
   default: "Join the Community"
-
 cta_secondary_url:
   default: "/signup"
-
 hero_stat_1:
   default: "4k+ Alumni"
-
 hero_stat_2:
   default: "200+ Universities"
-
 hero_stat_3:
   default: "12+ Years"
-
 show_alumni_spotlight:
-  default: true
   type: bool
-
+  default: true
 alumni_endpoint:
   default: ""
-  description: "Endpoint returning alumni spotlight JSON for the homepage. Leave blank to hide dynamic fetch."
-
 show_most_talked:
-  default: true
   type: bool
-
+  default: true
 most_talked_endpoint:
   default: ""
-  description: "Data Explorer or custom endpoint for most talked topics."
-
 show_latest:
-  default: true
   type: bool
-
+  default: true
 latest_endpoint:
   default: "/latest.json"
-  description: "Endpoint for latest topics. Default uses Discourse public latest feed."
-
 show_popular_courses:
-  default: true
   type: bool
-
+  default: true
 popular_courses_endpoint:
   default: ""
-  description: "External API or Data Explorer endpoint for popular courses."
-
 show_events:
-  default: true
   type: bool
-
+  default: true
 events_endpoint:
   default: ""
-  description: "External API endpoint for upcoming events."
-
 show_categories:
-  default: true
   type: bool
-
+  default: true
 categories_endpoint:
   default: "/categories.json"
-  description: "Endpoint for category list. Default uses Discourse public categories feed."
-
-use_categories_fallback:
-  default: true
-  type: bool
-  description: "Render the landing layout on the categories route as a fallback when the home tab is unavailable."
