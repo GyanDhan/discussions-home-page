@@ -53,6 +53,7 @@ categories_limit:
   description: "Max number of categories to display."
 
 categories_slugs:
-  type: list
+  type: string
+  list: true
   default: ""
-  description: "Optional list of category slugs or IDs to include (max 6). Leave empty to use default ordering."
+  description: "Optional comma-separated list of category slugs to include (max 6). Example: students,education,cultural. Leave empty to use default ordering. Visit /categories to see available category slugs."

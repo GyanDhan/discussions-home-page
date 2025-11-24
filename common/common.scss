@@ -159,6 +159,32 @@
   text-decoration: none;
 }
 
+.gh-filter select {
+  padding: 8px 32px 8px 12px;
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-sm);
+  background: var(--gh-surface);
+  color: var(--gh-text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%235c6c72' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 140ms ease;
+}
+
+.gh-filter select:hover {
+  border-color: var(--gh-primary);
+}
+
+.gh-filter select:focus {
+  outline: none;
+  border-color: var(--gh-primary);
+  box-shadow: 0 0 0 3px rgba(12, 160, 142, 0.1);
+}
+
 .gh-card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -175,10 +201,15 @@
   gap: 8px;
 }
 
-.gh-card-list--topics,
-.gh-card-list--events {
+.gh-card-list--topics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gh-card-list--events {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -191,18 +222,27 @@
 }
 
 .gh-card--event {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.gh-card--event > div {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
 }
 
 .gh-event__thumb {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--gh-radius-sm);
+  height: 140px;
   object-fit: cover;
-  background: #e8eff1;
+  background: linear-gradient(135deg, #e8eff1, #d4dfe3);
+  display: block;
 }
 
 .gh-card__title {
@@ -305,6 +345,10 @@
 
   .gh-card-list--topics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gh-card-list--events {
+    grid-template-columns: 1fr;
   }
 }
 

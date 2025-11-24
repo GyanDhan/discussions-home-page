@@ -329,14 +329,14 @@ const buildHomeHtml = (s) => {
 
   const mostTalked = s.show_most_talked
     ? `
-    <section class="gh-section gh-section--split">
+    <section class="gh-section">
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Most Talked Topics</p>
           <h2>Trending conversations</h2>
         </div>
         <div class="gh-filter">
-          <select onchange="window.location.href='/top/' + this.value">
+          <select id="gh-trending-filter" data-period="">
             <option value="">All time</option>
             <option value='yearly'>Year</option>
             <option value='quarterly'>Quarter</option>
@@ -346,7 +346,7 @@ const buildHomeHtml = (s) => {
           </select>
         </div>
       </div>
-      <div class="gh-card-list gh-card-list--topics gh-skeleton" data-block="most-talked" data-endpoint="${escapeHtml(
+      <div class="gh-card-grid gh-card-grid--three gh-skeleton" data-block="most-talked" data-endpoint="${escapeHtml(
         s.most_talked_endpoint || ""
       )}">
         <div class="gh-card gh-card--topic"></div>
@@ -443,44 +443,64 @@ const buildHomeHtml = (s) => {
 };
 
 export default apiInitializer("0.11.3", (api) => {
+  const loadBlock = (wrapper, endpoint) => {
+    const blockName = wrapper.dataset.block;
+    const renderer = renderers[blockName];
+    const normalize = normalizers[blockName];
+
+    if (!renderer || !normalize) {
+      removeSkeleton(wrapper);
+      return;
+    }
+
+    const usePlaceholder = !endpoint;
+    if (usePlaceholder) {
+      renderer(wrapper, placeholders[blockName] || []);
+      return;
+    }
+
+    wrapper.classList.add("gh-skeleton");
+    fetch(endpoint, { credentials: "same-origin" })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Request failed");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (blockName === "categories") {
+          renderer(wrapper, filterCategories(normalize(data), settings));
+        } else {
+          renderer(wrapper, normalize(data));
+        }
+      })
+      .catch(() =>
+        usePlaceholder
+          ? renderer(wrapper, placeholders[blockName] || [])
+          : renderEmpty(wrapper, "We could not load this section right now.")
+      );
+  };
+
   const hydrate = (root) => {
     const blocks = root.querySelectorAll("[data-block]");
     blocks.forEach((wrapper) => {
-      const blockName = wrapper.dataset.block;
       const endpoint = wrapper.dataset.endpoint;
-      const renderer = renderers[blockName];
-      const normalize = normalizers[blockName];
-      if (!renderer || !normalize) {
-        removeSkeleton(wrapper);
-        return;
-      }
-
-      const usePlaceholder = !endpoint;
-      if (usePlaceholder) {
-        renderer(wrapper, placeholders[blockName] || []);
-        return;
-      }
-
-      fetch(endpoint, { credentials: "same-origin" })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Request failed");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (blockName === "categories") {
-            renderer(wrapper, filterCategories(normalize(data), settings));
-          } else {
-            renderer(wrapper, normalize(data));
-          }
-        })
-        .catch(() =>
-          usePlaceholder
-            ? renderer(wrapper, placeholders[blockName] || [])
-            : renderEmpty(wrapper, "We could not load this section right now.")
-        );
+      loadBlock(wrapper, endpoint);
     });
+
+    // Setup trending filter
+    const trendingFilter = root.querySelector("#gh-trending-filter");
+    if (trendingFilter) {
+      trendingFilter.addEventListener("change", (e) => {
+        const period = e.target.value;
+        const block = root.querySelector('[data-block="most-talked"]');
+        if (block) {
+          const baseEndpoint = block.dataset.endpoint || "/top.json";
+          const newEndpoint = period ? `/top/${period}.json` : baseEndpoint;
+          loadBlock(block, newEndpoint);
+        }
+      });
+    }
   };
 
   const injectLanding = () => {
@@ -514,6 +534,32 @@ export default apiInitializer("0.11.3", (api) => {
       hydrate(container);
     }
   };
+
+  // Helper to log available categories for theme configuration
+  const logAvailableSlugs = () => {
+    if (settings.categories_endpoint) {
+      fetch(settings.categories_endpoint, { credentials: "same-origin" })
+        .then((response) => response.json())
+        .then((data) => {
+          const cats = normalizers.categories(data);
+          const slugs = cats.map((c) => c.slug).filter(Boolean);
+          console.info(
+            "[GD Connect Theme] Available category slugs:",
+            slugs.join(", ")
+          );
+          console.info(
+            "[GD Connect Theme] To configure categories_slugs setting, use a comma-separated list like:",
+            slugs.slice(0, 6).join(",")
+          );
+        })
+        .catch(() => {});
+    }
+  };
+
+  // Log available slugs once on initial load to help with configuration
+  if (window.location.pathname === "/" || window.location.pathname === "/categories") {
+    setTimeout(logAvailableSlugs, 1000);
+  }
 
   api.onPageChange(() => injectLanding());
   injectLanding();
