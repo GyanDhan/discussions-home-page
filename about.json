@@ -4,6 +4,6 @@
   "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
   "component": true,
   "modifiers": {
-    "top_menu": "home"
+    "top_menu": ["home"]
   }
 }
