@@ -192,6 +192,11 @@ const renderers = {
   categories: renderCategories,
 };
 
+const isLandingRoute = () => {
+  const path = (window.location.pathname || "/").replace(/\/+$/, "");
+  return path === "" || path === "/" || path === "/categories";
+};
+
 const buildHomeHtml = (s) => {
   const stat1 = escapeHtml(s.hero_stat_1 || "");
   const stat2 = escapeHtml(s.hero_stat_2 || "");
@@ -375,6 +380,15 @@ export default apiInitializer("0.11.3", (api) => {
   };
 
   const injectLanding = () => {
+    const allowed = isLandingRoute();
+    if (!allowed) {
+      const existing = document.querySelector("[data-gh-landing]");
+      if (existing) {
+        existing.style.display = "none";
+      }
+      return;
+    }
+
     let container = document.querySelector("[data-gh-landing]");
     if (!container) {
       // Fallback: create and prepend into the discovery list container
@@ -389,6 +403,7 @@ export default apiInitializer("0.11.3", (api) => {
     if (!container) {
       return;
     }
+    container.style.display = "block";
     if (!container.dataset.hydrated) {
       container.innerHTML = buildHomeHtml(settings);
       container.dataset.hydrated = "true";
