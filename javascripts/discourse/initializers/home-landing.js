@@ -212,7 +212,37 @@ const filterCategories = (cats, s) => {
         .filter(Boolean);
 
   let filtered = cats || [];
+
   if (allowlist.length) {
+    // Validate slugs against available categories
+    const validSlugs = (cats || []).map((c) => String(c.slug));
+    const validIds = (cats || []).map((c) => String(c.id));
+    const validNames = (cats || []).map((c) => String(c.name));
+
+    const invalidSlugs = allowlist.filter(
+      (slug) =>
+        !validSlugs.includes(slug) &&
+        !validIds.includes(slug) &&
+        !validNames.includes(slug)
+    );
+
+    if (invalidSlugs.length > 0) {
+      console.warn(
+        "[GD Connect Theme] Invalid category slugs detected:",
+        invalidSlugs.join(", ")
+      );
+      console.info(
+        "[GD Connect Theme] Available category slugs:",
+        validSlugs.join(", ")
+      );
+    }
+
+    if (allowlist.length > limit) {
+      console.warn(
+        `[GD Connect Theme] Too many categories selected (${allowlist.length}). Only first ${limit} will be displayed.`
+      );
+    }
+
     filtered = filtered.filter(
       (c) =>
         allowlist.includes(String(c.slug)) ||
@@ -220,6 +250,7 @@ const filterCategories = (cats, s) => {
         allowlist.includes(String(c.name))
     );
   }
+
   return filtered.slice(0, limit);
 };
 
@@ -543,14 +574,48 @@ export default apiInitializer("0.11.3", (api) => {
         .then((data) => {
           const cats = normalizers.categories(data);
           const slugs = cats.map((c) => c.slug).filter(Boolean);
-          console.info(
-            "[GD Connect Theme] Available category slugs:",
-            slugs.join(", ")
+          const names = cats.map((c) => ({ slug: c.slug, name: c.name }));
+
+          console.groupCollapsed(
+            "%c[GD Connect Theme] Category Configuration Helper",
+            "color: #0ca08e; font-weight: bold; font-size: 12px;"
           );
-          console.info(
-            "[GD Connect Theme] To configure categories_slugs setting, use a comma-separated list like:",
-            slugs.slice(0, 6).join(",")
+
+          console.log(
+            "%cAvailable Categories:",
+            "font-weight: bold; color: #1f2b2e;"
           );
+          console.table(names);
+
+          console.log(
+            "%cTo configure the categories_slugs theme setting:",
+            "font-weight: bold; color: #1f2b2e; margin-top: 10px;"
+          );
+          console.log(
+            "1. Go to Admin → Customize → Themes → Air → Components → Air Home Landing"
+          );
+          console.log(
+            "2. Find the 'categories_slugs' setting"
+          );
+          console.log(
+            "3. Enter a comma-separated list of slugs (max 6)"
+          );
+
+          console.log(
+            "%cExample configuration:",
+            "font-weight: bold; color: #0ca08e; margin-top: 10px;"
+          );
+          const exampleSlugs = slugs.slice(0, 6).join(",");
+          console.log(`%c${exampleSlugs}`, "background: #f6fbfb; padding: 4px 8px; border-radius: 4px; font-family: monospace;");
+
+          console.log(
+            "%cCurrent configuration:",
+            "font-weight: bold; color: #1f2b2e; margin-top: 10px;"
+          );
+          const currentSlugs = settings.categories_slugs || "(empty - showing all categories)";
+          console.log(`%c${currentSlugs}`, "background: #f6fbfb; padding: 4px 8px; border-radius: 4px; font-family: monospace;");
+
+          console.groupEnd();
         })
         .catch(() => {});
     }

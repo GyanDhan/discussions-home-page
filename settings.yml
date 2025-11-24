@@ -56,4 +56,4 @@ categories_slugs:
   type: string
   list: true
   default: ""
-  description: "Optional comma-separated list of category slugs to include (max 6). Example: students,education,cultural. Leave empty to use default ordering. Visit /categories to see available category slugs."
+  description: "Comma-separated list of category slugs to display (max 6). Example: students,education,cultural,engineering,research,social. Leave empty to show all categories. Open browser console on homepage to see available category slugs and configuration helper."
