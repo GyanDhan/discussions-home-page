@@ -396,13 +396,6 @@ export default apiInitializer("0.11.3", (api) => {
     }
   };
 
-  api.onPageChange((path) => {
-    if (path === "/" || path.startsWith("/categories")) {
-      injectLanding();
-    }
-  });
-
-  if (window.location.pathname === "/" || window.location.pathname.startsWith("/categories")) {
-    injectLanding();
-  }
+  api.onPageChange(() => injectLanding());
+  injectLanding();
 });
