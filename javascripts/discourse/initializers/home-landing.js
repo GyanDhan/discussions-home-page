@@ -126,12 +126,16 @@ const renderEvents = (block, events) => {
     const location = escapeHtml(event.location || event.mode || "");
     const href = event.url || event.cta_url || "#";
     const cta = escapeHtml(event.cta_label || "Register");
+    const image = escapeHtml(event.image || event.thumbnail || "https://placehold.co/160x120?text=Event");
 
     return `
       <article class="gh-card gh-card--event">
-        <p class="gh-card__title">${title}</p>
-        <p class="gh-card__meta">${date} · ${location}</p>
-        <a class="gh-button gh-button--ghost" href="${href}">${cta}</a>
+        <img class="gh-event__thumb" src="${image}" alt="${title}">
+        <div>
+          <p class="gh-card__title">${title}</p>
+          <p class="gh-card__meta">${date} · ${location}</p>
+          <a class="gh-button gh-button--ghost" href="${href}">${cta}</a>
+        </div>
       </article>
     `;
   });
@@ -219,6 +223,59 @@ const filterCategories = (cats, s) => {
   return filtered.slice(0, limit);
 };
 
+const placeholders = {
+  alumni: [
+    {
+      name: "Akash Tandon",
+      title: "Data Science @ UCLA",
+      university: "Los Angeles, USA",
+      cta_label: "Message",
+      avatar: "https://placehold.co/90x90?text=AT",
+    },
+    {
+      name: "John Elbert",
+      title: "ML Engineer @ MIT",
+      university: "Massachusetts, USA",
+      cta_label: "Message",
+      avatar: "https://placehold.co/90x90?text=JE",
+    },
+    {
+      name: "Anay Kular",
+      title: "FinTech @ Oxford",
+      university: "Oxford, UK",
+      cta_label: "Message",
+      avatar: "https://placehold.co/90x90?text=AK",
+    },
+  ],
+  "most-talked": [
+    { title: "What does an ecologist do in their job? I need some help here", slug: "eco-job", id: 1, posts_count: 12, views: 320 },
+    { title: "Contract premed and number of credits in USA", slug: "premed-credits", id: 2, posts_count: 18, views: 540 },
+    { title: "What is scaling in education?", slug: "scaling-education", id: 3, posts_count: 9, views: 210 },
+  ],
+  latest: [
+    { title: "What are the criteria in selecting students for college?", slug: "criteria", id: 4, posts_count: 5, views: 120 },
+    { title: "Baylor versus St. George for the business game", slug: "baylor-st-george", id: 5, posts_count: 7, views: 180 },
+    { title: "Staying in Europe or moving to Australia?", slug: "europe-aus", id: 6, posts_count: 4, views: 95 },
+  ],
+  "popular-courses": [
+    { title: "Course Title", description: "Course", price: "$5,000", cta_label: "Learn More" },
+    { title: "Prerequisite Course", description: "Course", price: "$3,200", cta_label: "Learn More" },
+    { title: "Advanced Topics", description: "Course", price: "$4,500", cta_label: "Learn More" },
+  ],
+  events: [
+    { title: "The Disney Business Game", date: "25 Mar", location: "Online", cta_label: "Register" },
+    { title: "Bonvert your Business Game", date: "29 Mar", location: "Hybrid", cta_label: "Register" },
+  ],
+  categories: [
+    { name: "Students", slug: "students", id: 1 },
+    { name: "Education", slug: "education", id: 2 },
+    { name: "Cultural", slug: "cultural", id: 3 },
+    { name: "Engineering", slug: "engineering", id: 4 },
+    { name: "Research", slug: "research", id: 5 },
+    { name: "Social", slug: "social", id: 6 },
+  ],
+};
+
 const buildHomeHtml = (s) => {
   const stat1 = escapeHtml(s.hero_stat_1 || "");
   const stat2 = escapeHtml(s.hero_stat_2 || "");
@@ -262,8 +319,7 @@ const buildHomeHtml = (s) => {
           <p class="gh-section__sub">Get real advice from people who have been there.</p>
         </div>
       </div>
-      <div class="gh-card-grid gh-card-grid--four gh-skeleton">
-        <div class="gh-card gh-card--person"></div>
+      <div class="gh-card-grid gh-card-grid--three gh-skeleton">
         <div class="gh-card gh-card--person"></div>
         <div class="gh-card gh-card--person"></div>
         <div class="gh-card gh-card--person"></div>
@@ -281,8 +337,18 @@ const buildHomeHtml = (s) => {
           <p class="gh-section__eyebrow">Most Talked Topics</p>
           <h2>Trending conversations</h2>
         </div>
+        <div class="gh-filter">
+          <select onchange="window.location.href='/top/' + this.value">
+            <option value="">All time</option>
+            <option value='yearly'>Year</option>
+            <option value='quarterly'>Quarter</option>
+            <option value='monthly'>Month</option>
+            <option value='weekly'>Week</option>
+            <option value='daily'>Day</option>
+          </select>
+        </div>
       </div>
-      <div class="gh-card-list gh-skeleton">
+      <div class="gh-card-list gh-card-list--topics gh-skeleton">
         <div class="gh-card gh-card--topic"></div>
         <div class="gh-card gh-card--topic"></div>
         <div class="gh-card gh-card--topic"></div>
@@ -298,7 +364,7 @@ const buildHomeHtml = (s) => {
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Latest</p>
-          <h2>Fresh from the community</h2>
+          <h2>Latest</h2>
         </div>
         <a class="gh-link" href="/latest">View all</a>
       </div>
@@ -384,8 +450,14 @@ export default apiInitializer("0.11.3", (api) => {
       const endpoint = wrapper.dataset.endpoint;
       const renderer = renderers[blockName];
       const normalize = normalizers[blockName];
-      if (!renderer || !normalize || !endpoint) {
+      if (!renderer || !normalize) {
         removeSkeleton(wrapper);
+        return;
+      }
+
+      const usePlaceholder = !endpoint;
+      if (usePlaceholder) {
+        renderer(wrapper, placeholders[blockName] || []);
         return;
       }
 
@@ -403,7 +475,11 @@ export default apiInitializer("0.11.3", (api) => {
             renderer(wrapper, normalize(data));
           }
         })
-        .catch(() => renderEmpty(wrapper, "We could not load this section right now."));
+        .catch(() =>
+          usePlaceholder
+            ? renderer(wrapper, placeholders[blockName] || [])
+            : renderEmpty(wrapper, "We could not load this section right now.")
+        );
     });
   };
 
