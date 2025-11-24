@@ -200,29 +200,36 @@ const fetchJson = (endpoint) =>
     return response.json();
   });
 
+const isHomeLikeRoute = (path = "") => {
+  if (!path) return false;
+  return path === "/" || path.startsWith("/categories");
+};
+
 export default apiInitializer("0.11.3", (api) => {
-  const injectHomeIfNeeded = () => {
-    const pathname = window.location.pathname || "/";
-    if (!(pathname === "/" || pathname.startsWith("/categories"))) {
-      return;
-    }
-    if (document.querySelector(".gh-home")) {
-      return;
-    }
+  const mountHome = () => {
+    const path = window.location.pathname || "/";
+    const mount = document.querySelector("#gh-home-mount");
     const tpl = document.getElementById("gh-home-template");
-    const outlet = document.querySelector("#main-outlet");
-    if (!tpl || !outlet) {
-      return;
+    const isHome = isHomeLikeRoute(path);
+
+    document.body.classList.toggle("gh-home-active", isHome);
+
+    if (!isHome || !mount || !tpl) {
+      if (mount) {
+        mount.innerHTML = "";
+      }
+      return null;
     }
 
-    // Render the template into the main outlet, replacing the default categories layout.
-    outlet.innerHTML = tpl.innerHTML;
+    if (!mount.querySelector(".gh-home")) {
+      mount.innerHTML = tpl.innerHTML;
+    }
+
+    return mount.querySelector(".gh-home");
   };
 
   const initHome = () => {
-    injectHomeIfNeeded();
-
-    const page = document.querySelector(".gh-home");
+    const page = mountHome();
     if (!page) {
       return;
     }

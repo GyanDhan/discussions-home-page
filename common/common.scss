@@ -17,6 +17,25 @@ body.home {
   background: var(--gh-bg);
 }
 
+body.gh-home-active {
+  background: var(--gh-bg);
+}
+
+body.gh-home-active #main-outlet {
+  display: none;
+}
+
+#gh-home-mount {
+  max-width: 1200px;
+  margin: 0 auto 48px auto;
+  padding: 16px 24px 64px;
+  display: none;
+}
+
+body.gh-home-active #gh-home-mount {
+  display: block;
+}
+
 .gh-home {
   max-width: 1200px;
   margin: 0 auto 48px auto;
