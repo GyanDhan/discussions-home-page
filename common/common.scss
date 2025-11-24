@@ -1,0 +1,334 @@
+:root {
+  --gh-bg: #f6fbfb;
+  --gh-surface: #ffffff;
+  --gh-primary: #0ca08e;
+  --gh-primary-strong: #0b8f7f;
+  --gh-accent: #20a6c9;
+  --gh-text: #1f2b2e;
+  --gh-subtext: #5c6c72;
+  --gh-border: #e1e8ea;
+  --gh-shadow: 0 14px 40px rgba(15, 47, 52, 0.08);
+  --gh-radius-lg: 16px;
+  --gh-radius: 12px;
+  --gh-radius-sm: 8px;
+}
+
+body.home {
+  background: var(--gh-bg);
+}
+
+.gh-home {
+  max-width: 1200px;
+  margin: 0 auto 48px auto;
+  padding: 16px 24px 64px;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  color: var(--gh-text);
+}
+
+.gh-home--mobile {
+  padding: 12px 16px 48px;
+}
+
+.gh-hero {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 24px;
+  background: linear-gradient(135deg, rgba(12, 160, 142, 0.1), rgba(32, 166, 201, 0.15));
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: var(--gh-shadow);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.gh-hero__copy h1 {
+  margin: 6px 0 10px;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.gh-hero__eyebrow {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gh-primary);
+  margin: 0;
+}
+
+.gh-hero__subtitle {
+  color: var(--gh-subtext);
+  margin: 0 0 16px;
+  max-width: 520px;
+}
+
+.gh-hero__actions {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.gh-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: var(--gh-radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 140ms ease;
+}
+
+.gh-button--primary {
+  background: var(--gh-primary);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(12, 160, 142, 0.25);
+}
+
+.gh-button--primary:hover {
+  background: var(--gh-primary-strong);
+  transform: translateY(-1px);
+}
+
+.gh-button--ghost {
+  background: #ffffff;
+  color: var(--gh-primary-strong);
+  border: 1px solid var(--gh-border);
+}
+
+.gh-button--ghost:hover {
+  box-shadow: 0 8px 20px rgba(18, 69, 78, 0.08);
+}
+
+.gh-hero__stats {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.gh-stat {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: var(--gh-radius);
+  padding: 10px 12px;
+  font-weight: 600;
+  color: var(--gh-primary-strong);
+  border: 1px solid rgba(12, 160, 142, 0.12);
+}
+
+.gh-hero__art {
+  position: relative;
+}
+
+.gh-hero__blob {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: radial-gradient(circle at 20% 20%, rgba(12, 160, 142, 0.3), transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(32, 166, 201, 0.35), transparent 60%),
+    radial-gradient(circle at 40% 70%, rgba(12, 160, 142, 0.28), transparent 55%);
+  filter: blur(0px);
+}
+
+.gh-section {
+  background: var(--gh-surface);
+  border-radius: var(--gh-radius-lg);
+  padding: 20px 20px 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--gh-border);
+  box-shadow: var(--gh-shadow);
+}
+
+.gh-section--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.gh-section--two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+
+.gh-section__col {
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  padding: 18px;
+  box-shadow: var(--gh-shadow);
+}
+
+.gh-section__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.gh-section__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gh-primary-strong);
+  margin: 0 0 6px;
+}
+
+.gh-section__sub {
+  color: var(--gh-subtext);
+  margin: 4px 0 0;
+}
+
+.gh-link {
+  color: var(--gh-primary-strong);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.gh-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.gh-card-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.gh-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gh-card {
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius);
+  padding: 12px;
+  box-shadow: 0 12px 24px rgba(13, 47, 55, 0.04);
+}
+
+.gh-card__title {
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.gh-card__meta {
+  color: var(--gh-subtext);
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+
+.gh-card__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: var(--gh-radius-sm);
+  background: rgba(12, 160, 142, 0.1);
+  color: var(--gh-primary-strong);
+  font-weight: 600;
+  font-size: 13px;
+  margin-right: 6px;
+}
+
+.gh-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gh-subtext);
+}
+
+.gh-card--person {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.gh-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gh-border);
+  object-fit: cover;
+}
+
+.gh-person__name {
+  font-weight: 700;
+  margin: 0;
+}
+
+.gh-person__title {
+  margin: 2px 0 6px;
+  color: var(--gh-subtext);
+  font-size: 13px;
+}
+
+.gh-chip {
+  padding: 10px 12px;
+  border-radius: var(--gh-radius-sm);
+  border: 1px solid var(--gh-border);
+  background: #fff;
+  font-weight: 600;
+  text-align: center;
+}
+
+.gh-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.gh-skeleton .gh-card,
+.gh-skeleton .gh-chip {
+  min-height: 60px;
+  background: linear-gradient(90deg, #f1f5f6 25%, #e7edef 37%, #f1f5f6 63%);
+  background-size: 400% 100%;
+  animation: gh-shimmer 1.2s ease infinite;
+  border-color: transparent;
+}
+
+@keyframes gh-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .gh-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .gh-section--split,
+  .gh-section--two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .gh-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .gh-card-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .gh-hero {
+    padding: 22px;
+  }
+}

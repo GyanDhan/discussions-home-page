@@ -1,0 +1,108 @@
+<div class="gh-home gh-home--mobile">
+  <section class="gh-hero">
+    <div class="gh-hero__copy">
+      <p class="gh-hero__eyebrow">For future admits</p>
+      <h1>{{theme-setting "hero_title"}}</h1>
+      <p class="gh-hero__subtitle">{{theme-setting "hero_subtitle"}}</p>
+      <div class="gh-hero__actions">
+        <a class="gh-button gh-button--primary" href="{{theme-setting "cta_primary_url"}}">{{theme-setting "cta_primary_label"}}</a>
+        <a class="gh-button gh-button--ghost" href="{{theme-setting "cta_secondary_url"}}">{{theme-setting "cta_secondary_label"}}</a>
+      </div>
+      <div class="gh-hero__stats">
+        <div class="gh-stat">{{theme-setting "hero_stat_1"}}</div>
+        <div class="gh-stat">{{theme-setting "hero_stat_2"}}</div>
+        <div class="gh-stat">{{theme-setting "hero_stat_3"}}</div>
+      </div>
+    </div>
+  </section>
+
+  {{#if theme-setting "show_alumni_spotlight"}}
+    <section class="gh-section" data-block="alumni" data-endpoint="{{theme-setting "alumni_endpoint"}}">
+      <div class="gh-section__header">
+        <p class="gh-section__eyebrow">Alumni Spotlight</p>
+        <h2>Talk to alumni</h2>
+        <p class="gh-section__sub">Get real advice from people who have been there.</p>
+      </div>
+      <div class="gh-card-grid gh-card-grid--two gh-skeleton">
+        <div class="gh-card gh-card--person"></div>
+        <div class="gh-card gh-card--person"></div>
+        <div class="gh-card gh-card--person"></div>
+        <div class="gh-card gh-card--person"></div>
+      </div>
+    </section>
+  {{/if}}
+
+  {{#if theme-setting "show_most_talked"}}
+    <section class="gh-section" data-block="most-talked" data-endpoint="{{theme-setting "most_talked_endpoint"}}">
+      <div class="gh-section__header">
+        <p class="gh-section__eyebrow">Most Talked Topics</p>
+        <h2>Trending conversations</h2>
+      </div>
+      <div class="gh-card-list gh-skeleton">
+        <div class="gh-card gh-card--topic"></div>
+        <div class="gh-card gh-card--topic"></div>
+        <div class="gh-card gh-card--topic"></div>
+      </div>
+    </section>
+  {{/if}}
+
+  {{#if theme-setting "show_latest"}}
+    <section class="gh-section" data-block="latest" data-endpoint="{{theme-setting "latest_endpoint"}}">
+      <div class="gh-section__header">
+        <p class="gh-section__eyebrow">Latest</p>
+        <h2>Fresh from the community</h2>
+        <a class="gh-link" href="/latest">View all</a>
+      </div>
+      <div class="gh-card-list gh-skeleton">
+        <div class="gh-card gh-card--topic"></div>
+        <div class="gh-card gh-card--topic"></div>
+        <div class="gh-card gh-card--topic"></div>
+      </div>
+    </section>
+  {{/if}}
+
+  {{#if theme-setting "show_popular_courses"}}
+    <section class="gh-section" data-block="popular-courses" data-endpoint="{{theme-setting "popular_courses_endpoint"}}">
+      <div class="gh-section__header">
+        <p class="gh-section__eyebrow">Most Popular Courses</p>
+        <h2>Courses loved by peers</h2>
+      </div>
+      <div class="gh-card-list gh-skeleton">
+        <div class="gh-card gh-card--course"></div>
+        <div class="gh-card gh-card--course"></div>
+        <div class="gh-card gh-card--course"></div>
+      </div>
+    </section>
+  {{/if}}
+
+  {{#if theme-setting "show_events"}}
+    <section class="gh-section" data-block="events" data-endpoint="{{theme-setting "events_endpoint"}}">
+      <div class="gh-section__header">
+        <p class="gh-section__eyebrow">Upcoming Events</p>
+        <h2>Join live sessions</h2>
+      </div>
+      <div class="gh-card-list gh-skeleton">
+        <div class="gh-card gh-card--event"></div>
+        <div class="gh-card gh-card--event"></div>
+      </div>
+    </section>
+  {{/if}}
+
+  {{#if theme-setting "show_categories"}}
+    <section class="gh-section" data-block="categories" data-endpoint="{{theme-setting "categories_endpoint"}}">
+      <div class="gh-section__header">
+        <p class="gh-section__eyebrow">Explore Categories</p>
+        <h2>Browse by interest</h2>
+        <a class="gh-link" href="/categories">View all</a>
+      </div>
+      <div class="gh-category-grid gh-skeleton">
+        <div class="gh-chip"></div>
+        <div class="gh-chip"></div>
+        <div class="gh-chip"></div>
+        <div class="gh-chip"></div>
+        <div class="gh-chip"></div>
+        <div class="gh-chip"></div>
+      </div>
+    </section>
+  {{/if}}
+</div>
