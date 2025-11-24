@@ -403,10 +403,10 @@ const buildHomeHtml = (s) => {
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Upcoming Events</p>
-          <h2>Join live sessions</h2>
+          <h2>Upcoming Events</h2>
         </div>
       </div>
-      <div class="gh-card-list gh-skeleton">
+      <div class="gh-card-list gh-card-list--events gh-skeleton">
         <div class="gh-card gh-card--event"></div>
         <div class="gh-card gh-card--event"></div>
       </div>

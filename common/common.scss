@@ -175,7 +175,8 @@
   gap: 8px;
 }
 
-.gh-card-list--topics {
+.gh-card-list--topics,
+.gh-card-list--events {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
@@ -191,7 +192,7 @@
 
 .gh-card--event {
   display: grid;
-  grid-template-columns: 110px 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
   align-items: center;
 }
