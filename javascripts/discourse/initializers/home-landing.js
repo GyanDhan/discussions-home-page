@@ -375,7 +375,17 @@ export default apiInitializer("0.11.3", (api) => {
   };
 
   const injectLanding = () => {
-    const container = document.querySelector('[data-gh-landing]');
+    let container = document.querySelector("[data-gh-landing]");
+    if (!container) {
+      // Fallback: create and prepend into the discovery list container
+      const discovery = document.querySelector(".discovery-list-container, .discovery-categories");
+      if (discovery) {
+        container = document.createElement("div");
+        container.className = "gh-home";
+        container.dataset.ghLanding = "true";
+        discovery.insertBefore(container, discovery.firstChild);
+      }
+    }
     if (!container) {
       return;
     }
