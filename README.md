@@ -39,6 +39,7 @@ Expected shapes (can be extended as needed):
 - `about.json` – marks this as a component and registers `home` in the top menu.
 - `settings.yml` – hero copy, toggles, and endpoints.
 - `desktop/home.html` + `mobile/home.html` – homepage markup.
+- `desktop/categories.html` + `mobile/categories.html` – fallback: render the same layout on the categories route when enabled.
 - `common/common.scss` – layout and styling.
 - `javascripts/discourse/initializers/home-landing.js` – fetches endpoints and hydrates sections; handles errors gracefully.
 
@@ -47,3 +48,4 @@ Expected shapes (can be extended as needed):
 - Tune the theme settings for copy/URLs and hide sections you don’t need.
 - For protected data, always proxy rather than embedding keys in theme settings.
 - Test on staging for anon vs. logged-in, mobile/desktop, and slow networks.
+- If the `home` tab cannot be selected in `top menu`, set `use_categories_fallback` (enabled by default) to render this layout on the categories route. Disable it if you want the native categories page instead.

@@ -72,3 +72,8 @@ show_categories:
 categories_endpoint:
   default: "/categories.json"
   description: "Endpoint for category list. Default uses Discourse public categories feed."
+
+use_categories_fallback:
+  default: true
+  type: bool
+  description: "Render the landing layout on the categories route as a fallback when the home tab is unavailable."

@@ -8,12 +8,6 @@ const escapeHtml = (value) =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
-const isHomePath = (path = "") => {
-  if (!path) return false;
-  const normalized = path.split("?")[0];
-  return normalized === "/" || normalized === "";
-};
-
 const removeSkeleton = (block) => {
   block.classList.remove("gh-skeleton");
 };
@@ -234,13 +228,6 @@ export default apiInitializer("0.11.3", (api) => {
     });
   };
 
-  api.onPageChange((url) => {
-    if (isHomePath(url)) {
-      initHome();
-    }
-  });
-
-  if (isHomePath(window.location.pathname)) {
-    initHome();
-  }
+  api.onPageChange(() => initHome());
+  initHome();
 });
