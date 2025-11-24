@@ -310,11 +310,90 @@
 
 @media (max-width: 560px) {
   .gh-card-grid {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gh-primary) transparent;
+  }
+
+  .gh-card-grid::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .gh-card-grid::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .gh-card-grid::-webkit-scrollbar-thumb {
+    background: var(--gh-primary);
+    border-radius: 3px;
+  }
+
+  .gh-card-grid .gh-card {
+    flex: 0 0 85%;
+    scroll-snap-align: start;
   }
 
   .gh-card-list--topics {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gh-primary) transparent;
+  }
+
+  .gh-card-list--topics::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .gh-card-list--topics::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .gh-card-list--topics::-webkit-scrollbar-thumb {
+    background: var(--gh-primary);
+    border-radius: 3px;
+  }
+
+  .gh-card-list--topics .gh-card {
+    flex: 0 0 85%;
+    scroll-snap-align: start;
+  }
+
+  .gh-card-list--events {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gh-primary) transparent;
+  }
+
+  .gh-card-list--events::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .gh-card-list--events::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .gh-card-list--events::-webkit-scrollbar-thumb {
+    background: var(--gh-primary);
+    border-radius: 3px;
+  }
+
+  .gh-card-list--events .gh-card {
+    flex: 0 0 85%;
+    scroll-snap-align: start;
   }
 
   .gh-home {

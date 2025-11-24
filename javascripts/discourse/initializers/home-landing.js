@@ -309,9 +309,7 @@ const buildHomeHtml = (s) => {
 
   const alumni = s.show_alumni_spotlight
     ? `
-    <section class="gh-section" data-block="alumni" data-endpoint="${escapeHtml(
-      s.alumni_endpoint || ""
-    )}">
+    <section class="gh-section">
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Alumni Spotlight</p>
@@ -319,7 +317,9 @@ const buildHomeHtml = (s) => {
           <p class="gh-section__sub">Get real advice from people who have been there.</p>
         </div>
       </div>
-      <div class="gh-card-grid gh-card-grid--three gh-skeleton">
+      <div class="gh-card-grid gh-card-grid--three gh-skeleton" data-block="alumni" data-endpoint="${escapeHtml(
+        s.alumni_endpoint || ""
+      )}">
         <div class="gh-card gh-card--person"></div>
         <div class="gh-card gh-card--person"></div>
         <div class="gh-card gh-card--person"></div>
@@ -329,9 +329,7 @@ const buildHomeHtml = (s) => {
 
   const mostTalked = s.show_most_talked
     ? `
-    <section class="gh-section gh-section--split" data-block="most-talked" data-endpoint="${escapeHtml(
-      s.most_talked_endpoint || ""
-    )}">
+    <section class="gh-section gh-section--split">
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Most Talked Topics</p>
@@ -348,7 +346,9 @@ const buildHomeHtml = (s) => {
           </select>
         </div>
       </div>
-      <div class="gh-card-list gh-card-list--topics gh-skeleton">
+      <div class="gh-card-list gh-card-list--topics gh-skeleton" data-block="most-talked" data-endpoint="${escapeHtml(
+        s.most_talked_endpoint || ""
+      )}">
         <div class="gh-card gh-card--topic"></div>
         <div class="gh-card gh-card--topic"></div>
         <div class="gh-card gh-card--topic"></div>
@@ -358,9 +358,7 @@ const buildHomeHtml = (s) => {
 
   const latest = s.show_latest
     ? `
-    <div class="gh-section__col" data-block="latest" data-endpoint="${escapeHtml(
-      s.latest_endpoint || "/latest.json"
-    )}">
+    <div class="gh-section__col">
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Latest</p>
@@ -368,7 +366,9 @@ const buildHomeHtml = (s) => {
         </div>
         <a class="gh-link" href="/latest">View all</a>
       </div>
-      <div class="gh-card-list gh-skeleton">
+      <div class="gh-card-list gh-skeleton" data-block="latest" data-endpoint="${escapeHtml(
+        s.latest_endpoint || "/latest.json"
+      )}">
         <div class="gh-card gh-card--topic"></div>
         <div class="gh-card gh-card--topic"></div>
         <div class="gh-card gh-card--topic"></div>
@@ -378,16 +378,16 @@ const buildHomeHtml = (s) => {
 
   const courses = s.show_popular_courses
     ? `
-    <div class="gh-section__col" data-block="popular-courses" data-endpoint="${escapeHtml(
-      s.popular_courses_endpoint || ""
-    )}">
+    <div class="gh-section__col">
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Most Popular Courses</p>
           <h2>Courses loved by peers</h2>
         </div>
       </div>
-      <div class="gh-card-list gh-skeleton">
+      <div class="gh-card-list gh-skeleton" data-block="popular-courses" data-endpoint="${escapeHtml(
+        s.popular_courses_endpoint || ""
+      )}">
         <div class="gh-card gh-card--course"></div>
         <div class="gh-card gh-card--course"></div>
         <div class="gh-card gh-card--course"></div>
@@ -397,16 +397,16 @@ const buildHomeHtml = (s) => {
 
   const events = s.show_events
     ? `
-    <div class="gh-section__col" data-block="events" data-endpoint="${escapeHtml(
-      s.events_endpoint || ""
-    )}">
+    <div class="gh-section__col">
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Upcoming Events</p>
           <h2>Upcoming Events</h2>
         </div>
       </div>
-      <div class="gh-card-list gh-card-list--events gh-skeleton">
+      <div class="gh-card-list gh-card-list--events gh-skeleton" data-block="events" data-endpoint="${escapeHtml(
+        s.events_endpoint || ""
+      )}">
         <div class="gh-card gh-card--event"></div>
         <div class="gh-card gh-card--event"></div>
       </div>
@@ -415,9 +415,7 @@ const buildHomeHtml = (s) => {
 
   const categories = s.show_categories
     ? `
-    <div class="gh-section__col" data-block="categories" data-endpoint="${escapeHtml(
-      s.categories_endpoint || "/categories.json"
-    )}">
+    <div class="gh-section__col">
       <div class="gh-section__header">
         <div>
           <p class="gh-section__eyebrow">Explore Categories</p>
@@ -425,7 +423,9 @@ const buildHomeHtml = (s) => {
         </div>
         <a class="gh-link" href="/categories">View all</a>
       </div>
-      <div class="gh-category-grid gh-skeleton">
+      <div class="gh-category-grid gh-skeleton" data-block="categories" data-endpoint="${escapeHtml(
+        s.categories_endpoint || "/categories.json"
+      )}">
         <div class="gh-chip"></div>
         <div class="gh-chip"></div>
         <div class="gh-chip"></div>
