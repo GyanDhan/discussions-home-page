@@ -201,7 +201,27 @@ const fetchJson = (endpoint) =>
   });
 
 export default apiInitializer("0.11.3", (api) => {
+  const injectHomeIfNeeded = () => {
+    const pathname = window.location.pathname || "/";
+    if (!(pathname === "/" || pathname.startsWith("/categories"))) {
+      return;
+    }
+    if (document.querySelector(".gh-home")) {
+      return;
+    }
+    const tpl = document.getElementById("gh-home-template");
+    const outlet = document.querySelector("#main-outlet");
+    if (!tpl || !outlet) {
+      return;
+    }
+
+    // Render the template into the main outlet, replacing the default categories layout.
+    outlet.innerHTML = tpl.innerHTML;
+  };
+
   const initHome = () => {
+    injectHomeIfNeeded();
+
     const page = document.querySelector(".gh-home");
     if (!page) {
       return;
