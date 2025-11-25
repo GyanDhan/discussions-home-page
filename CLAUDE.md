@@ -207,39 +207,26 @@ Leave `events_endpoint` empty and the theme will show placeholder events. Update
 
 ### Backend Options (More Dynamic)
 
-**Option 3: External Serverless Function (Recommended for Now)**
-Use a free serverless function (Vercel, Netlify, Cloudflare Workers):
+**Option 3: Cloudflare Worker (Recommended - 5 Minutes Setup)**
 
-```javascript
-// Vercel serverless function: api/events.js
-import fetch from 'node-fetch';
-import { JSDOM } from 'jsdom';
+Cloudflare Workers is the easiest serverless option with generous free tier.
 
-export default async function handler(req, res) {
-  try {
-    const response = await fetch('https://www.gyandhan.com/events');
-    const html = await response.text();
-    const dom = new JSDOM(html);
+**Quick Setup:**
+1. Go to https://dash.cloudflare.com → Workers & Pages
+2. Create New Worker named `gyandhan-events`
+3. Copy code from `cloudflare-worker/gyandhan-events.js` in this repo
+4. Save and Deploy
+5. Copy the worker URL: `https://gyandhan-events.YOUR-SUBDOMAIN.workers.dev`
+6. Set `events_endpoint` to this URL in theme settings
 
-    // Extract events (customize based on actual HTML structure)
-    const events = Array.from(dom.window.document.querySelectorAll('.event-card'))
-      .slice(0, 2)
-      .map(card => ({
-        title: card.querySelector('.event-title')?.textContent,
-        date: card.querySelector('.event-date')?.textContent,
-        location: card.querySelector('.event-location')?.textContent,
-        url: card.querySelector('a')?.href,
-      }));
+**Complete instructions:** See `cloudflare-worker/README.md`
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json({ events });
-  } catch (error) {
-    res.status(500).json({ events: [] });
-  }
-}
-```
-
-Then set `events_endpoint` to `https://your-project.vercel.app/api/events`
+**Features:**
+- ✅ Free tier: 100,000 requests/day
+- ✅ Auto CORS handling
+- ✅ 1-hour caching
+- ✅ Fallback events if scraping fails
+- ✅ No credit card required
 
 **Option 4: Google Apps Script (No Server)**
 Create a Google Apps Script that scrapes and caches events:
