@@ -373,8 +373,20 @@ const placeholders = {
     { title: "Advanced Topics", description: "Course", price: "$4,500", cta_label: "Learn More" },
   ],
   events: [
-    { title: "The Disney Business Game", date: "25 Mar", location: "Online", cta_label: "Register" },
-    { title: "Bonvert your Business Game", date: "29 Mar", location: "Hybrid", cta_label: "Register" },
+    {
+      title: "Complete Guide to Studying Abroad After 12th: From Admission to Loans",
+      date: "Nov 29, 2025",
+      location: "Online Event",
+      cta_label: "Register",
+      url: "https://www.gyandhan.com/events"
+    },
+    {
+      title: "Ireland's Study Abroad Revolution: Smart Move or Strategic Mirage?",
+      date: "Nov 30, 2025",
+      location: "Online Event",
+      cta_label: "Register",
+      url: "https://www.gyandhan.com/events"
+    },
   ],
   categories: [
     { name: "Students", slug: "students", id: 1 },

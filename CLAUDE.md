@@ -192,31 +192,84 @@ The "Upcoming Events" section displays 2 upcoming events from https://www.gyandh
 
 ### Data Source Setup
 
-Since this is a client-side theme component, you need a backend endpoint to fetch events data. Options:
+Since this is a client-side theme component, you need a backend endpoint to fetch events data.
 
-**Option 1: Discourse Data Explorer Query (Recommended)**
-Create a Data Explorer query that fetches/scrapes Gyandhan events and returns JSON:
-```sql
--- This is a placeholder - you'll need actual implementation
--- that fetches from https://www.gyandhan.com/events
+### Simple Options (No Backend Required)
+
+**Option 1: Manual Updates (Quickest)**
+Leave `events_endpoint` empty and the theme will show placeholder events. Update placeholder events in `home-landing.js:338-343` when needed.
+
+**Option 2: Use Discourse Topics as Events**
+- Create topics in a specific category for events
+- Tag them with `#event`
+- Point `events_endpoint` to `/tag/event.json`
+- The normalizer will treat topics as events
+
+### Backend Options (More Dynamic)
+
+**Option 3: External Serverless Function (Recommended for Now)**
+Use a free serverless function (Vercel, Netlify, Cloudflare Workers):
+
+```javascript
+// Vercel serverless function: api/events.js
+import fetch from 'node-fetch';
+import { JSDOM } from 'jsdom';
+
+export default async function handler(req, res) {
+  try {
+    const response = await fetch('https://www.gyandhan.com/events');
+    const html = await response.text();
+    const dom = new JSDOM(html);
+
+    // Extract events (customize based on actual HTML structure)
+    const events = Array.from(dom.window.document.querySelectorAll('.event-card'))
+      .slice(0, 2)
+      .map(card => ({
+        title: card.querySelector('.event-title')?.textContent,
+        date: card.querySelector('.event-date')?.textContent,
+        location: card.querySelector('.event-location')?.textContent,
+        url: card.querySelector('a')?.href,
+      }));
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json({ events });
+  } catch (error) {
+    res.status(500).json({ events: [] });
+  }
+}
 ```
 
-**Option 2: Custom Discourse Plugin Endpoint**
-Create a Rails endpoint that scrapes the Gyandhan events page:
+Then set `events_endpoint` to `https://your-project.vercel.app/api/events`
+
+**Option 4: Google Apps Script (No Server)**
+Create a Google Apps Script that scrapes and caches events:
+
+```javascript
+function doGet() {
+  const events = fetchGyandhanEvents();
+  return ContentService.createTextOutput(JSON.stringify({ events }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function fetchGyandhanEvents() {
+  const response = UrlFetchApp.fetch('https://www.gyandhan.com/events');
+  // Parse HTML and extract events
+  // Return array of 2 events
+}
+```
+
+Deploy as web app, set `events_endpoint` to the apps script URL.
+
+**Option 5: Custom Discourse Plugin (For Later)**
+When ready for a permanent solution, create a Discourse plugin:
 ```ruby
 # plugins/gyandhan-events/plugin.rb
-get '/events.json' do
-  # Scrape https://www.gyandhan.com/events
-  # Parse upcoming events
-  # Return JSON
+Discourse::Application.routes.append do
+  get '/gyandhan-events' => 'gyandhan_events#index'
 end
 ```
 
-**Option 3: External API/Proxy**
-Set up a separate service that:
-1. Scrapes https://www.gyandhan.com/events on a schedule
-2. Caches the results
-3. Exposes a `/events.json` endpoint
+This requires Rails/Ruby knowledge and Discourse restart.
 
 ### Expected JSON Structure
 
