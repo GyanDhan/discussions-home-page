@@ -561,14 +561,19 @@ export default apiInitializer("0.11.3", (api) => {
 
         if (username) {
           try {
-            const composer = api.container.lookup("controller:composer");
-            composer.open({
-              action: composer.constructor.PRIVATE_MESSAGE,
+            const composerController = api.container.lookup("controller:composer");
+            const store = api.container.lookup("service:store");
+
+            // Create a new composer model
+            composerController.open({
+              action: composerController.constructor.PRIVATE_MESSAGE,
               recipients: username,
               archetypeId: "private_message",
               draftKey: "new_private_message",
+              hasTargetGroups: false,
+            }).then(() => {
+              console.log("[GD Connect Theme] Composer opened for:", username);
             });
-            console.log("[GD Connect Theme] Composer opened for:", username);
           } catch (error) {
             console.error("[GD Connect Theme] Error opening composer:", error);
           }
