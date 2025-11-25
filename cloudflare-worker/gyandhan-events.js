@@ -64,123 +64,105 @@ export default {
 
 /**
  * Parse events from HTML
- * This is a simple regex-based parser. Adjust based on actual HTML structure.
  */
 function parseEventsFromHTML(html) {
+  const events = extractUpcomingEvents(html);
+  return events.length ? events.slice(0, 6) : getFallbackEvents();
+}
+
+function extractUpcomingEvents(html) {
+  const sectionMatch = html.match(/<section[^>]*id="upcoming-events"[^>]*>([\s\S]*?)<\/section>/i);
+  if (!sectionMatch) {
+    console.warn("Upcoming events section not found");
+    return [];
+  }
+
+  const sectionHtml = sectionMatch[1];
+
+  const cardStarts = [...sectionHtml.matchAll(/<div[^>]*class="[^"]*bg-white[^"]*snap-center[^"]*"[^>]*>/gi)];
   const events = [];
 
-  try {
-    // Look for event data - adjust these patterns based on actual HTML structure
-    // This is a simplified example - you'll need to inspect the actual page
+  for (let i = 0; i < cardStarts.length; i++) {
+    const start = cardStarts[i].index;
+    const end = i + 1 < cardStarts.length ? cardStarts[i + 1].index : sectionHtml.length;
+    const cardHtml = sectionHtml.slice(start, end);
+    const event = formatEvent(cardHtml);
 
-    // Pattern 1: Try to find JSON data embedded in the page
-    const jsonMatch = html.match(/window\.__INITIAL_STATE__\s*=\s*({.+?});/s);
-    if (jsonMatch) {
-      const data = JSON.parse(jsonMatch[1]);
-      if (data.events && Array.isArray(data.events)) {
-        return data.events.slice(0, 2).map(formatEvent);
-      }
+    if (event) {
+      events.push(event);
     }
-
-    // Pattern 2: Extract from HTML structure
-    // Looking for common event patterns
-    const eventRegex = /<article[^>]*class="[^"]*event[^"]*"[^>]*>(.*?)<\/article>/gs;
-    const matches = [...html.matchAll(eventRegex)];
-
-    for (let i = 0; i < Math.min(matches.length, 2); i++) {
-      const eventHtml = matches[i][1];
-      const fullEventHtml = matches[i][0]; // Full article tag for URL extraction
-
-      // Extract title
-      const titleMatch = eventHtml.match(
-        /<h[1-6][^>]*>([^<]+)<\/h[1-6]>|<[^>]*class="[^"]*title[^"]*"[^>]*>([^<]+)</i
-      );
-      const title = titleMatch ? (titleMatch[1] || titleMatch[2]).trim() : "";
-
-      // Extract date
-      const dateMatch = eventHtml.match(
-        /<time[^>]*>([^<]+)<\/time>|<[^>]*class="[^"]*date[^"]*"[^>]*>([^<]+)</i
-      );
-      const date = dateMatch ? (dateMatch[1] || dateMatch[2]).trim() : "";
-
-      // Extract location
-      const locationMatch = eventHtml.match(
-        /<[^>]*class="[^"]*location[^"]*"[^>]*>([^<]+)|Online|Hybrid/i
-      );
-      const location = locationMatch ? locationMatch[1] || locationMatch[0] : "Online Event";
-
-      // Extract URL - look for the event detail page link
-      const urlMatch = fullEventHtml.match(/<a[^>]*href="([^"]+event[^"]*)"/) ||
-                       eventHtml.match(/<a[^>]*href="([^"]+)"/);
-      let url = "https://www.gyandhan.com/events";
-      if (urlMatch) {
-        url = urlMatch[1].startsWith("http")
-          ? urlMatch[1]
-          : `https://www.gyandhan.com${urlMatch[1]}`;
-      }
-
-      // Extract image - look for img tag or background-image
-      let image = "";
-
-      // Try img tag first
-      const imgMatch = eventHtml.match(/<img[^>]*src="([^"]+)"/i);
-      if (imgMatch) {
-        image = imgMatch[1].startsWith("http")
-          ? imgMatch[1]
-          : `https://www.gyandhan.com${imgMatch[1]}`;
-      } else {
-        // Try background-image in style attribute
-        const bgMatch = eventHtml.match(/background-image:\s*url\(['"]?([^'")]+)['"]?\)/i);
-        if (bgMatch) {
-          image = bgMatch[1].startsWith("http")
-            ? bgMatch[1]
-            : `https://www.gyandhan.com${bgMatch[1]}`;
-        } else {
-          // Try data-src for lazy loading
-          const dataSrcMatch = eventHtml.match(/data-src="([^"]+)"/i);
-          if (dataSrcMatch) {
-            image = dataSrcMatch[1].startsWith("http")
-              ? dataSrcMatch[1]
-              : `https://www.gyandhan.com${dataSrcMatch[1]}`;
-          }
-        }
-      }
-
-      if (title) {
-        events.push({
-          title,
-          date,
-          location,
-          url,
-          image,
-          cta_label: "Register",
-        });
-      }
-    }
-  } catch (error) {
-    console.error("Error parsing events:", error);
   }
 
-  // If no events found, return fallback data
-  if (events.length === 0) {
-    return getFallbackEvents();
-  }
-
-  return events.slice(0, 2);
+  return events;
 }
 
 /**
  * Format event object
  */
 function formatEvent(event) {
+  if (typeof event === "string") {
+    return parseCard(event);
+  }
+
   return {
     title: event.title || event.name || "",
+    name: event.title || event.name || "",
     date: event.date || event.start_date || event.starts_at || "",
     location: event.location || event.mode || "Online Event",
     url: event.url || event.link || event.registration_url || "https://www.gyandhan.com/events",
-    image: event.image || event.thumbnail || event.image_url || "",
+    image: event.image || event.thumbnail || event.image_url || event.imageurl || "",
+    imageurl: event.image || event.thumbnail || event.image_url || event.imageurl || "",
     cta_label: "Register",
   };
+}
+
+function parseCard(cardHtml) {
+  const imageMatch = cardHtml.match(/<img[^>]*src="([^"]+)"[^>]*>/i);
+  const imageurl = imageMatch ? toAbsoluteUrl(imageMatch[1]) : "";
+
+  const urlMatch = cardHtml.match(/href="([^"]*\/events[^"]*)"[^>]*>/i);
+  const url = urlMatch ? toAbsoluteUrl(urlMatch[1]) : "https://www.gyandhan.com/events";
+
+  const titleMatch =
+    cardHtml.match(/<span[^>]*class="[^"]*line-clamp-2[^"]*"[^>]*>([^<]+)<\/span>/i) ||
+    cardHtml.match(/class="[^"]*sr-only[^"]*"[^>]*>([^<]+)<\/span>/i) ||
+    cardHtml.match(/alt="([^"]+)"\s*\/?>/i);
+  const title = titleMatch ? cleanText(titleMatch[1]) : "";
+
+  const infoSpans = [...cardHtml.matchAll(/<span[^>]*class="[^"]*pl-1\.5[^"]*"[^>]*>([^<]+)<\/span>/gi)];
+  const dateText = infoSpans[0] ? cleanText(infoSpans[0][1]) : "";
+  const timeText = infoSpans[1] ? cleanText(infoSpans[1][1]) : "";
+  const date = [dateText, timeText].filter(Boolean).join(" ").trim();
+
+  const locationMatch = cardHtml.match(/text-center[^>]*>\s*([^<]+)\s*<\/div>/i);
+  const location = locationMatch ? cleanText(locationMatch[1]) : "Online Event";
+
+  if (!title) {
+    return null;
+  }
+
+  return {
+    title,
+    name: title,
+    date: date || dateText,
+    location,
+    url,
+    image: imageurl,
+    imageurl,
+    cta_label: "Register",
+  };
+}
+
+function toAbsoluteUrl(url) {
+  if (!url) return "";
+  if (url.startsWith("http")) return url;
+  if (url.startsWith("//")) return `https:${url}`;
+  if (url.startsWith("/")) return `https://www.gyandhan.com${url}`;
+  return `https://www.gyandhan.com/${url}`;
+}
+
+function cleanText(text) {
+  return text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
 /**
@@ -190,16 +172,22 @@ function getFallbackEvents() {
   return [
     {
       title: "Complete Guide to Studying Abroad After 12th: From Admission to Loans",
+      name: "Complete Guide to Studying Abroad After 12th: From Admission to Loans",
       date: "Nov 29, 2025",
       location: "Online Event",
       url: "https://www.gyandhan.com/events",
+      image: "https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/event/large_image/845/event_25th_large_image_845e8c1728ba7c0be_banner.webp",
+      imageurl: "https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/event/large_image/845/event_25th_large_image_845e8c1728ba7c0be_banner.webp",
       cta_label: "Register",
     },
     {
       title: "Ireland's Study Abroad Revolution: Smart Move or Strategic Mirage?",
+      name: "Ireland's Study Abroad Revolution: Smart Move or Strategic Mirage?",
       date: "Nov 30, 2025",
       location: "Online Event",
       url: "https://www.gyandhan.com/events",
+      image: "https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/event/large_image/836/Ireland_s_Study_Abroad_Revolution_Smart_Move_or_Strategic_Mirage_event_page_images_14_Nov_2025_64b9c3be7518d1ffc179.webp",
+      imageurl: "https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/event/large_image/836/Ireland_s_Study_Abroad_Revolution_Smart_Move_or_Strategic_Mirage_event_page_images_14_Nov_2025_64b9c3be7518d1ffc179.webp",
       cta_label: "Register",
     },
   ];

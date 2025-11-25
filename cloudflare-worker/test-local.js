@@ -4,171 +4,18 @@
  */
 
 // Polyfill fetch for Node.js if needed
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch =
+  globalThis.fetch ||
+  ((...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args)));
 
 /**
  * Parse events from HTML
  */
 function parseEventsFromHTML(html) {
-  const events = [];
+  const events = extractUpcomingEvents(html);
 
-  try {
-    console.log("\n🔍 Analyzing HTML structure...\n");
-
-    // Check for JSON data in the page
-    const jsonMatch = html.match(/window\.__INITIAL_STATE__\s*=\s*({.+?});/s);
-    if (jsonMatch) {
-      console.log("✅ Found window.__INITIAL_STATE__ JSON data");
-      try {
-        const data = JSON.parse(jsonMatch[1]);
-        console.log("📦 Parsed data:", JSON.stringify(data, null, 2));
-        if (data.events && Array.isArray(data.events)) {
-          return data.events.slice(0, 2).map(formatEvent);
-        }
-      } catch (e) {
-        console.log("❌ Failed to parse JSON:", e.message);
-      }
-    } else {
-      console.log("ℹ️  No window.__INITIAL_STATE__ found, trying HTML parsing");
-    }
-
-    // Try different HTML patterns
-    console.log("\n🔍 Looking for event HTML patterns...\n");
-
-    // Pattern 1: Articles with event class
-    let eventRegex = /<article[^>]*class="[^"]*event[^"]*"[^>]*>(.*?)<\/article>/gis;
-    let matches = [...html.matchAll(eventRegex)];
-    console.log(`📄 Pattern 1 (article.event): Found ${matches.length} matches`);
-
-    if (matches.length === 0) {
-      // Pattern 2: Divs with event class
-      eventRegex = /<div[^>]*class="[^"]*event[^"]*card[^"]*"[^>]*>(.*?)<\/div>/gis;
-      matches = [...html.matchAll(eventRegex)];
-      console.log(`📄 Pattern 2 (div.event-card): Found ${matches.length} matches`);
-    }
-
-    if (matches.length === 0) {
-      // Pattern 3: Any element with data-event attribute
-      eventRegex = /<[^>]*data-event[^>]*>(.*?)<\/[^>]+>/gis;
-      matches = [...html.matchAll(eventRegex)];
-      console.log(`📄 Pattern 3 (data-event): Found ${matches.length} matches`);
-    }
-
-    // Show sample HTML if found
-    if (matches.length > 0) {
-      console.log("\n📝 Sample event HTML (first 500 chars):");
-      console.log(matches[0][0].substring(0, 500) + "...\n");
-    }
-
-    for (let i = 0; i < Math.min(matches.length, 2); i++) {
-      const eventHtml = matches[i][1] || matches[i][0];
-
-      console.log(`\n🎯 Parsing Event ${i + 1}:`);
-
-      // Extract title - try multiple patterns
-      let title = "";
-      const titlePatterns = [
-        /<h[1-6][^>]*>([^<]+)<\/h[1-6]>/i,
-        /<[^>]*class="[^"]*title[^"]*"[^>]*>([^<]+)/i,
-        /<[^>]*class="[^"]*heading[^"]*"[^>]*>([^<]+)/i,
-      ];
-
-      for (const pattern of titlePatterns) {
-        const match = eventHtml.match(pattern);
-        if (match) {
-          title = match[1].trim();
-          console.log(`  ✅ Title: "${title}"`);
-          break;
-        }
-      }
-
-      // Extract date
-      let date = "";
-      const datePatterns = [
-        /<time[^>]*>([^<]+)<\/time>/i,
-        /<[^>]*class="[^"]*date[^"]*"[^>]*>([^<]+)<\/[^>]*>/i,
-        /\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4}/i,
-      ];
-
-      for (const pattern of datePatterns) {
-        const match = eventHtml.match(pattern);
-        if (match) {
-          date = match[1] ? match[1].trim() : match[0].trim();
-          console.log(`  ✅ Date: "${date}"`);
-          break;
-        }
-      }
-
-      // Extract location
-      let location = "Online Event";
-      const locationPatterns = [
-        /<[^>]*class="[^"]*location[^"]*"[^>]*>([^<]+)/i,
-        /\b(Online|Hybrid|Virtual)\b/i,
-      ];
-
-      for (const pattern of locationPatterns) {
-        const match = eventHtml.match(pattern);
-        if (match) {
-          location = match[1] ? match[1].trim() : match[0].trim();
-          console.log(`  ✅ Location: "${location}"`);
-          break;
-        }
-      }
-
-      // Extract URL - look for the event detail page link
-      const urlMatch = matches[i][0].match(/<a[^>]*href="([^"]+event[^"]*)"/) ||
-                       eventHtml.match(/<a[^>]*href="([^"]+)"/);
-      let url = "https://www.gyandhan.com/events";
-      if (urlMatch) {
-        url = urlMatch[1].startsWith("http")
-          ? urlMatch[1]
-          : `https://www.gyandhan.com${urlMatch[1]}`;
-        console.log(`  ✅ URL: "${url}"`);
-      }
-
-      // Extract image
-      let image = "";
-      const imgMatch = eventHtml.match(/<img[^>]*src="([^"]+)"/i);
-      if (imgMatch) {
-        image = imgMatch[1].startsWith("http")
-          ? imgMatch[1]
-          : `https://www.gyandhan.com${imgMatch[1]}`;
-        console.log(`  ✅ Image: "${image}"`);
-      } else {
-        const bgMatch = eventHtml.match(/background-image:\s*url\(['"]?([^'")]+)['"]?\)/i);
-        if (bgMatch) {
-          image = bgMatch[1].startsWith("http")
-            ? bgMatch[1]
-            : `https://www.gyandhan.com${bgMatch[1]}`;
-          console.log(`  ✅ Image (bg): "${image}"`);
-        } else {
-          const dataSrcMatch = eventHtml.match(/data-src="([^"]+)"/i);
-          if (dataSrcMatch) {
-            image = dataSrcMatch[1].startsWith("http")
-              ? dataSrcMatch[1]
-              : `https://www.gyandhan.com${dataSrcMatch[1]}`;
-            console.log(`  ✅ Image (lazy): "${image}"`);
-          } else {
-            console.log(`  ⚠️  No image found`);
-          }
-        }
-      }
-
-      if (title) {
-        events.push({
-          title,
-          date,
-          location,
-          url,
-          image,
-          cta_label: "Register",
-        });
-      } else {
-        console.log("  ❌ No title found, skipping event");
-      }
-    }
-  } catch (error) {
-    console.error("❌ Error parsing events:", error);
+  if (events.length === 0) {
+    console.log("⚠️  No events found in upcoming section, will return fallback data\n");
   }
 
   return events;
@@ -177,10 +24,12 @@ function parseEventsFromHTML(html) {
 function formatEvent(event) {
   return {
     title: event.title || event.name || "",
+    name: event.title || event.name || "",
     date: event.date || event.start_date || event.starts_at || "",
     location: event.location || event.mode || "Online Event",
     url: event.url || event.link || event.registration_url || "https://www.gyandhan.com/events",
-    image: event.image || event.thumbnail || event.image_url || "",
+    image: event.image || event.thumbnail || event.image_url || event.imageurl || "",
+    imageurl: event.image || event.thumbnail || event.image_url || event.imageurl || "",
     cta_label: "Register",
   };
 }
@@ -189,19 +38,115 @@ function getFallbackEvents() {
   return [
     {
       title: "Complete Guide to Studying Abroad After 12th: From Admission to Loans",
+      name: "Complete Guide to Studying Abroad After 12th: From Admission to Loans",
       date: "Nov 29, 2025",
       location: "Online Event",
       url: "https://www.gyandhan.com/events",
+      image: "https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/event/large_image/845/event_25th_large_image_845e8c1728ba7c0be_banner.webp",
+      imageurl:
+        "https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/event/large_image/845/event_25th_large_image_845e8c1728ba7c0be_banner.webp",
       cta_label: "Register",
     },
     {
       title: "Ireland's Study Abroad Revolution: Smart Move or Strategic Mirage?",
+      name: "Ireland's Study Abroad Revolution: Smart Move or Strategic Mirage?",
       date: "Nov 30, 2025",
       location: "Online Event",
       url: "https://www.gyandhan.com/events",
+      image:
+        "https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/event/large_image/836/Ireland_s_Study_Abroad_Revolution_Smart_Move_or_Strategic_Mirage_event_page_images_14_Nov_2025_64b9c3be7518d1ffc179.webp",
+      imageurl:
+        "https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/event/large_image/836/Ireland_s_Study_Abroad_Revolution_Smart_Move_or_Strategic_Mirage_event_page_images_14_Nov_2025_64b9c3be7518d1ffc179.webp",
       cta_label: "Register",
     },
   ];
+}
+
+function extractUpcomingEvents(html) {
+  console.log("\n🔍 Analyzing Upcoming Events section...\n");
+
+  const sectionMatch = html.match(/<section[^>]*id="upcoming-events"[^>]*>([\s\S]*?)<\/section>/i);
+  if (!sectionMatch) {
+    console.log("❌ No #upcoming-events section found");
+    return [];
+  }
+
+  const sectionHtml = sectionMatch[1];
+  const cardStarts = [...sectionHtml.matchAll(/<div[^>]*class="[^"]*bg-white[^"]*snap-center[^"]*"[^>]*>/gi)];
+
+  console.log(`📄 Found ${cardStarts.length} event cards in the slider`);
+
+  const events = [];
+
+  for (let i = 0; i < cardStarts.length; i++) {
+    const start = cardStarts[i].index;
+    const end = i + 1 < cardStarts.length ? cardStarts[i + 1].index : sectionHtml.length;
+    const cardHtml = sectionHtml.slice(start, end);
+    const parsed = parseCard(cardHtml);
+
+    if (parsed) {
+      console.log(`\n🎯 Event ${i + 1}`);
+      console.log(`  ✅ Title: ${parsed.title}`);
+      console.log(`  ✅ Date: ${parsed.date}`);
+      console.log(`  ✅ URL: ${parsed.url}`);
+      console.log(`  ✅ Image: ${parsed.image}`);
+      console.log(`  ✅ Location: ${parsed.location}`);
+      events.push(parsed);
+    } else {
+      console.log(`  ⚠️  Skipping card ${i + 1} (missing title)`);
+    }
+  }
+
+  return events;
+}
+
+function parseCard(cardHtml) {
+  const imageMatch = cardHtml.match(/<img[^>]*src="([^"]+)"[^>]*>/i);
+  const imageurl = imageMatch ? toAbsoluteUrl(imageMatch[1]) : "";
+
+  const urlMatch = cardHtml.match(/href="([^"]*\/events[^"]*)"[^>]*>/i);
+  const url = urlMatch ? toAbsoluteUrl(urlMatch[1]) : "https://www.gyandhan.com/events";
+
+  const titleMatch =
+    cardHtml.match(/<span[^>]*class="[^"]*line-clamp-2[^"]*"[^>]*>([^<]+)<\/span>/i) ||
+    cardHtml.match(/class="[^"]*sr-only[^"]*"[^>]*>([^<]+)<\/span>/i) ||
+    cardHtml.match(/alt="([^"]+)"\s*\/?>/i);
+  const title = titleMatch ? cleanText(titleMatch[1]) : "";
+
+  const infoSpans = [...cardHtml.matchAll(/<span[^>]*class="[^"]*pl-1\.5[^"]*"[^>]*>([^<]+)<\/span>/gi)];
+  const dateText = infoSpans[0] ? cleanText(infoSpans[0][1]) : "";
+  const timeText = infoSpans[1] ? cleanText(infoSpans[1][1]) : "";
+  const date = [dateText, timeText].filter(Boolean).join(" ").trim();
+
+  const locationMatch = cardHtml.match(/text-center[^>]*>\s*([^<]+)\s*<\/div>/i);
+  const location = locationMatch ? cleanText(locationMatch[1]) : "Online Event";
+
+  if (!title) {
+    return null;
+  }
+
+  return {
+    title,
+    name: title,
+    date: date || dateText,
+    location,
+    url,
+    image: imageurl,
+    imageurl,
+    cta_label: "Register",
+  };
+}
+
+function toAbsoluteUrl(url) {
+  if (!url) return "";
+  if (url.startsWith("http")) return url;
+  if (url.startsWith("//")) return `https:${url}`;
+  if (url.startsWith("/")) return `https://www.gyandhan.com${url}`;
+  return `https://www.gyandhan.com/${url}`;
+}
+
+function cleanText(text) {
+  return text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
 /**
