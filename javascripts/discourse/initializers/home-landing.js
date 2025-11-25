@@ -561,15 +561,24 @@ export default apiInitializer("0.11.3", (api) => {
 
         if (username) {
           try {
-            // Navigate to the new private message page with the recipient pre-filled
-            const appController = api.container.lookup("controller:application");
-            appController.send("composePrivateMessage", { username });
-            console.log("[GD Connect Theme] Composer triggered for:", username);
+            const composer = api.container.lookup("controller:composer");
+
+            // Close any existing composer first
+            if (composer.get("model")) {
+              composer.close();
+            }
+
+            // Open composer with proper parameters
+            composer.open({
+              action: "privateMessage",
+              recipients: username,
+              archetypeId: "private_message",
+              draftKey: `new_private_message_${username}`,
+            });
+
+            console.log("[GD Connect Theme] Composer opened for:", username);
           } catch (error) {
             console.error("[GD Connect Theme] Error opening composer:", error);
-            console.log("[GD Connect Theme] Falling back to URL navigation");
-            // Fallback: navigate to messages page
-            window.location.href = `/u/${username}/messages`;
           }
         } else {
           console.warn("[GD Connect Theme] No username found on button");
