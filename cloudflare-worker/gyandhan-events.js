@@ -89,6 +89,7 @@ function parseEventsFromHTML(html) {
 
     for (let i = 0; i < Math.min(matches.length, 2); i++) {
       const eventHtml = matches[i][1];
+      const fullEventHtml = matches[i][0]; // Full article tag for URL extraction
 
       // Extract title
       const titleMatch = eventHtml.match(
@@ -108,13 +109,42 @@ function parseEventsFromHTML(html) {
       );
       const location = locationMatch ? locationMatch[1] || locationMatch[0] : "Online Event";
 
-      // Extract URL
-      const urlMatch = eventHtml.match(/<a[^>]*href="([^"]+)"/);
-      const url = urlMatch
-        ? urlMatch[1].startsWith("http")
+      // Extract URL - look for the event detail page link
+      const urlMatch = fullEventHtml.match(/<a[^>]*href="([^"]+event[^"]*)"/) ||
+                       eventHtml.match(/<a[^>]*href="([^"]+)"/);
+      let url = "https://www.gyandhan.com/events";
+      if (urlMatch) {
+        url = urlMatch[1].startsWith("http")
           ? urlMatch[1]
-          : `https://www.gyandhan.com${urlMatch[1]}`
-        : "https://www.gyandhan.com/events";
+          : `https://www.gyandhan.com${urlMatch[1]}`;
+      }
+
+      // Extract image - look for img tag or background-image
+      let image = "";
+
+      // Try img tag first
+      const imgMatch = eventHtml.match(/<img[^>]*src="([^"]+)"/i);
+      if (imgMatch) {
+        image = imgMatch[1].startsWith("http")
+          ? imgMatch[1]
+          : `https://www.gyandhan.com${imgMatch[1]}`;
+      } else {
+        // Try background-image in style attribute
+        const bgMatch = eventHtml.match(/background-image:\s*url\(['"]?([^'")]+)['"]?\)/i);
+        if (bgMatch) {
+          image = bgMatch[1].startsWith("http")
+            ? bgMatch[1]
+            : `https://www.gyandhan.com${bgMatch[1]}`;
+        } else {
+          // Try data-src for lazy loading
+          const dataSrcMatch = eventHtml.match(/data-src="([^"]+)"/i);
+          if (dataSrcMatch) {
+            image = dataSrcMatch[1].startsWith("http")
+              ? dataSrcMatch[1]
+              : `https://www.gyandhan.com${dataSrcMatch[1]}`;
+          }
+        }
+      }
 
       if (title) {
         events.push({
@@ -122,6 +152,7 @@ function parseEventsFromHTML(html) {
           date,
           location,
           url,
+          image,
           cta_label: "Register",
         });
       }
@@ -146,7 +177,8 @@ function formatEvent(event) {
     title: event.title || event.name || "",
     date: event.date || event.start_date || event.starts_at || "",
     location: event.location || event.mode || "Online Event",
-    url: event.url || event.link || "https://www.gyandhan.com/events",
+    url: event.url || event.link || event.registration_url || "https://www.gyandhan.com/events",
+    image: event.image || event.thumbnail || event.image_url || "",
     cta_label: "Register",
   };
 }

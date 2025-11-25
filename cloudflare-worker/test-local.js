@@ -115,14 +115,43 @@ function parseEventsFromHTML(html) {
         }
       }
 
-      // Extract URL
+      // Extract URL - look for the event detail page link
+      const urlMatch = matches[i][0].match(/<a[^>]*href="([^"]+event[^"]*)"/) ||
+                       eventHtml.match(/<a[^>]*href="([^"]+)"/);
       let url = "https://www.gyandhan.com/events";
-      const urlMatch = eventHtml.match(/<a[^>]*href="([^"]+)"/);
       if (urlMatch) {
         url = urlMatch[1].startsWith("http")
           ? urlMatch[1]
           : `https://www.gyandhan.com${urlMatch[1]}`;
         console.log(`  ✅ URL: "${url}"`);
+      }
+
+      // Extract image
+      let image = "";
+      const imgMatch = eventHtml.match(/<img[^>]*src="([^"]+)"/i);
+      if (imgMatch) {
+        image = imgMatch[1].startsWith("http")
+          ? imgMatch[1]
+          : `https://www.gyandhan.com${imgMatch[1]}`;
+        console.log(`  ✅ Image: "${image}"`);
+      } else {
+        const bgMatch = eventHtml.match(/background-image:\s*url\(['"]?([^'")]+)['"]?\)/i);
+        if (bgMatch) {
+          image = bgMatch[1].startsWith("http")
+            ? bgMatch[1]
+            : `https://www.gyandhan.com${bgMatch[1]}`;
+          console.log(`  ✅ Image (bg): "${image}"`);
+        } else {
+          const dataSrcMatch = eventHtml.match(/data-src="([^"]+)"/i);
+          if (dataSrcMatch) {
+            image = dataSrcMatch[1].startsWith("http")
+              ? dataSrcMatch[1]
+              : `https://www.gyandhan.com${dataSrcMatch[1]}`;
+            console.log(`  ✅ Image (lazy): "${image}"`);
+          } else {
+            console.log(`  ⚠️  No image found`);
+          }
+        }
       }
 
       if (title) {
@@ -131,6 +160,7 @@ function parseEventsFromHTML(html) {
           date,
           location,
           url,
+          image,
           cta_label: "Register",
         });
       } else {
@@ -149,7 +179,8 @@ function formatEvent(event) {
     title: event.title || event.name || "",
     date: event.date || event.start_date || event.starts_at || "",
     location: event.location || event.mode || "Online Event",
-    url: event.url || event.link || "https://www.gyandhan.com/events",
+    url: event.url || event.link || event.registration_url || "https://www.gyandhan.com/events",
+    image: event.image || event.thumbnail || event.image_url || "",
     cta_label: "Register",
   };
 }
