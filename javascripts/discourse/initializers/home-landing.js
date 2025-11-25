@@ -119,7 +119,7 @@ const renderAlumni = (block, alumni) => {
             <p class="gh-person__name">${name}</p>
             ${titleHtml}
             ${universityHtml}
-            <a class="gh-button gh-button--ghost" href="${href}">${cta}</a>
+            <button class="gh-button gh-button--ghost gh-message-btn" data-username="${escapeHtml(person.username || '')}">${cta}</button>
           </div>
         </article>
       `;
@@ -625,6 +625,22 @@ export default apiInitializer("0.11.3", (api) => {
         }
       });
     }
+
+    // Setup message buttons for alumni cards
+    const messageButtons = root.querySelectorAll(".gh-message-btn");
+    messageButtons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const username = btn.dataset.username;
+        if (username) {
+          api.composer.open({
+            action: "privateMessage",
+            recipients: username,
+            archetypeId: "private_message",
+          });
+        }
+      });
+    });
   };
 
   const injectLanding = () => {

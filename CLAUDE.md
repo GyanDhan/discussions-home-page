@@ -159,8 +159,7 @@ Set `alumni_usernames` to a comma-separated list of Discourse usernames. The the
 - `user_fields[19]` → Degree (displayed as title/subtitle)
 - `user_fields[18]` → College/University
 - `user_fields[17]` → Location
-- Profile link: `/u/{username}`
-- Message CTA: `/u/{username}/messages`
+- Message CTA: Opens Discourse composer modal for private message
 
 **Custom Field IDs:**
 These are hardcoded in `CUSTOM_FIELD_IDS` (home-landing.js:16-20):
@@ -170,6 +169,9 @@ These are hardcoded in `CUSTOM_FIELD_IDS` (home-landing.js:16-20):
 
 **Empty Field Handling:**
 If any custom field is empty, that field is completely hidden from the card (no blank space).
+
+**Message Button Behavior:**
+The "Message" button on alumni cards opens Discourse's native message composer modal (via `api.composer.open()`), allowing users to send private messages without leaving the page. This provides the same UX as clicking "Message" on a user's profile.
 
 **Console Helper:**
 On homepage load, an "Alumni Spotlight Configuration Helper" appears in console with:

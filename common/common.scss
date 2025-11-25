@@ -67,6 +67,8 @@
   border-radius: var(--gh-radius);
   font-weight: 600;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease, background 140ms ease;
 }
 
