@@ -185,6 +185,104 @@ Set `alumni_endpoint` to an external API URL. Data is fetched and normalized via
 
 **Note:** If `alumni_usernames` is set, it takes precedence over `alumni_endpoint`.
 
+## Events Configuration
+
+### Overview
+The "Upcoming Events" section displays 2 upcoming events from https://www.gyandhan.com/events.
+
+### Data Source Setup
+
+Since this is a client-side theme component, you need a backend endpoint to fetch events data. Options:
+
+**Option 1: Discourse Data Explorer Query (Recommended)**
+Create a Data Explorer query that fetches/scrapes Gyandhan events and returns JSON:
+```sql
+-- This is a placeholder - you'll need actual implementation
+-- that fetches from https://www.gyandhan.com/events
+```
+
+**Option 2: Custom Discourse Plugin Endpoint**
+Create a Rails endpoint that scrapes the Gyandhan events page:
+```ruby
+# plugins/gyandhan-events/plugin.rb
+get '/events.json' do
+  # Scrape https://www.gyandhan.com/events
+  # Parse upcoming events
+  # Return JSON
+end
+```
+
+**Option 3: External API/Proxy**
+Set up a separate service that:
+1. Scrapes https://www.gyandhan.com/events on a schedule
+2. Caches the results
+3. Exposes a `/events.json` endpoint
+
+### Expected JSON Structure
+
+The `events_endpoint` should return JSON in one of these formats:
+
+```json
+{
+  "events": [
+    {
+      "title": "Complete Guide to Studying Abroad After 12th",
+      "date": "Saturday, November 29, 2025" or "Nov 29",
+      "location": "Online Event" or "Hybrid",
+      "mode": "Online",
+      "url": "https://www.gyandhan.com/events/...",
+      "image": "https://www.gyandhan.com/.../event-image.jpg" (optional)
+    }
+  ]
+}
+```
+
+Or directly as an array:
+```json
+[
+  {
+    "title": "...",
+    "date": "...",
+    "location": "...",
+    "url": "..."
+  }
+]
+```
+
+### Field Mapping
+- `title` → Event name (required)
+- `date` or `starts_at` → Display date (flexible format)
+- `location` or `mode` → "Online Event", "Hybrid", "City Name"
+- `url` or `cta_url` → Registration/details link
+- `image` or `thumbnail` → Event image (optional, shows placeholder if empty)
+- `cta_label` → Button text (defaults to "Register")
+
+### Normalizer Behavior
+The events normalizer (`home-landing.js:252-257`):
+- Handles `data.events`, `data.data.events`, or root array
+- Automatically limits to 2 events (even if endpoint returns more)
+- Gracefully handles missing fields
+
+### Implementation Steps
+
+1. **Create Backend Endpoint**
+   - Set up scraper for https://www.gyandhan.com/events
+   - Extract: title, date, location, URL for upcoming events
+   - Return as JSON endpoint
+
+2. **Configure Theme Setting**
+   - Admin → Customize → Themes → Air Home Landing
+   - Set `events_endpoint` to your API URL
+   - Example: `/events.json` or `https://api.example.com/gyandhan/events`
+
+3. **Verify Data**
+   - Check browser console for fetch logs
+   - Verify 2 events appear in UI
+   - Test with empty response (should show placeholder)
+
+### CORS Considerations
+Direct client-side fetching from https://www.gyandhan.com/events will fail due to CORS policy. You **must** use a backend endpoint.
+
 ## Category Slug Configuration
 
 The theme includes an enhanced configuration helper for the `categories_slugs` setting:

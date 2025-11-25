@@ -47,6 +47,7 @@ show_events:
   default: true
 events_endpoint:
   default: ""
+  description: "API endpoint that returns upcoming events from https://www.gyandhan.com/events. Should return JSON with 'events' array containing objects with: title, date, location/mode, url, image (optional). Example: /events.json or Data Explorer query endpoint. Max 2 events will be displayed."
 show_categories:
   type: bool
   default: true

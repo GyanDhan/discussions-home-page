@@ -194,7 +194,7 @@ const renderEvents = (block, events) => {
     return;
   }
 
-  const cards = events.slice(0, 4).map((event) => {
+  const cards = events.slice(0, 2).map((event) => {
     const title = escapeHtml(event.title || "Event");
     const date = escapeHtml(event.date || event.starts_at || "");
     const location = escapeHtml(event.location || event.mode || "");
@@ -249,7 +249,12 @@ const normalizers = {
     })),
   latest: (data) => data?.topic_list?.topics || data?.topics || [],
   "popular-courses": (data) => data?.courses || data || [],
-  events: (data) => data?.events || data || [],
+  events: (data) => {
+    // Handle various event data structures
+    const eventList = data?.events || data?.data?.events || data || [];
+    // Limit to 2 upcoming events
+    return eventList.slice(0, 2);
+  },
   categories: (data) =>
     data?.category_list?.categories ||
     data?.categories ||
