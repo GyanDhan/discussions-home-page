@@ -145,6 +145,44 @@ Since this is a Discourse theme component, you need a running Discourse instance
 - Styles assume Air's base styles are present
 - Outlet connectors are specific to Air's template structure
 
+## Alumni Spotlight Configuration
+
+The alumni spotlight can be configured in two ways:
+
+### Option 1: Username-Based (Recommended)
+
+Set `alumni_usernames` to a comma-separated list of Discourse usernames. The theme will automatically fetch user data from Discourse's user API.
+
+**Data Mapping:**
+- `user.name` or `user.username` → Alumni name
+- `user.avatar_template` → Profile picture
+- `user_fields[19]` → Degree (displayed as title/subtitle)
+- `user_fields[18]` → College/University
+- `user_fields[17]` → Location
+- Profile link: `/u/{username}`
+- Message CTA: `/u/{username}/messages`
+
+**Custom Field IDs:**
+These are hardcoded in `CUSTOM_FIELD_IDS` (home-landing.js:16-20):
+- Location: 17
+- College: 18
+- Degree: 19
+
+**Empty Field Handling:**
+If any custom field is empty, that field is completely hidden from the card (no blank space).
+
+**Console Helper:**
+On homepage load, an "Alumni Spotlight Configuration Helper" appears in console with:
+- Step-by-step configuration instructions
+- Current username configuration
+- Field mapping reference
+
+### Option 2: External Endpoint
+
+Set `alumni_endpoint` to an external API URL. Data is fetched and normalized via `normalizers.alumni`.
+
+**Note:** If `alumni_usernames` is set, it takes precedence over `alumni_endpoint`.
+
 ## Category Slug Configuration
 
 The theme includes an enhanced configuration helper for the `categories_slugs` setting:

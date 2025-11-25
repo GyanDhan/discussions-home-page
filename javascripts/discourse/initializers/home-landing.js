@@ -12,6 +12,73 @@ const removeSkeleton = (block) => {
   block.classList.remove("gh-skeleton");
 };
 
+// Custom field IDs for user profile data
+const CUSTOM_FIELD_IDS = {
+  location: "17",
+  college: "18",
+  degree: "19",
+};
+
+// Fetch user data from Discourse user API
+const fetchUserData = async (username) => {
+  try {
+    const response = await fetch(`/u/${username}.json`, {
+      credentials: "same-origin",
+    });
+    if (!response.ok) {
+      console.warn(`[GD Connect Theme] Failed to fetch user: ${username}`);
+      return null;
+    }
+    const data = await response.json();
+    const user = data.user;
+
+    // Extract custom field values
+    const customFields = user.user_fields || {};
+    const location = customFields[CUSTOM_FIELD_IDS.location] || "";
+    const college = customFields[CUSTOM_FIELD_IDS.college] || "";
+    const degree = customFields[CUSTOM_FIELD_IDS.degree] || "";
+
+    return {
+      name: user.name || user.username,
+      username: user.username,
+      avatar_template: user.avatar_template,
+      title: degree, // Use degree as the title/subtitle
+      university: college, // Use college as university
+      location: location,
+      url: `/u/${user.username}`,
+      cta_label: "Message",
+      cta_url: `/u/${user.username}/messages`,
+    };
+  } catch (error) {
+    console.warn(
+      `[GD Connect Theme] Error fetching user ${username}:`,
+      error
+    );
+    return null;
+  }
+};
+
+// Fetch multiple users by usernames
+const fetchAlumniByUsernames = async (usernames) => {
+  const usernameList = Array.isArray(usernames)
+    ? usernames
+    : String(usernames || "")
+        .split(",")
+        .map((u) => u.trim())
+        .filter(Boolean);
+
+  if (!usernameList.length) {
+    return [];
+  }
+
+  const alumniData = await Promise.all(
+    usernameList.slice(0, 6).map((username) => fetchUserData(username))
+  );
+
+  // Filter out null values (failed fetches)
+  return alumniData.filter(Boolean);
+};
+
 const renderEmpty = (block, message = "No data available yet.") => {
   block.innerHTML = `<div class="gh-card"><p class="gh-card__meta">${escapeHtml(
     message
@@ -38,13 +105,20 @@ const renderAlumni = (block, alumni) => {
         ? avatar.replace("{size}", "90")
         : "https://placehold.co/90x90?text=Alumni";
 
+      const titleHtml = title
+        ? `<p class="gh-person__title">${title}</p>`
+        : "";
+      const universityHtml = university
+        ? `<p class="gh-card__meta">${university}</p>`
+        : "";
+
       return `
         <article class="gh-card gh-card--person">
           <img class="gh-avatar" src="${avatarUrl}" alt="${name}">
           <div class="gh-person__meta">
             <p class="gh-person__name">${name}</p>
-            <p class="gh-person__title">${title}</p>
-            <p class="gh-card__meta">${university}</p>
+            ${titleHtml}
+            ${universityHtml}
             <a class="gh-button gh-button--ghost" href="${href}">${cta}</a>
           </div>
         </article>
@@ -474,13 +548,32 @@ const buildHomeHtml = (s) => {
 };
 
 export default apiInitializer("0.11.3", (api) => {
-  const loadBlock = (wrapper, endpoint) => {
+  const loadBlock = async (wrapper, endpoint) => {
     const blockName = wrapper.dataset.block;
     const renderer = renderers[blockName];
     const normalize = normalizers[blockName];
 
     if (!renderer || !normalize) {
       removeSkeleton(wrapper);
+      return;
+    }
+
+    // Special handling for alumni block with usernames
+    if (blockName === "alumni" && settings.alumni_usernames) {
+      wrapper.classList.add("gh-skeleton");
+      try {
+        const alumniData = await fetchAlumniByUsernames(
+          settings.alumni_usernames
+        );
+        if (alumniData.length > 0) {
+          renderer(wrapper, alumniData);
+        } else {
+          renderer(wrapper, placeholders[blockName] || []);
+        }
+      } catch (error) {
+        console.warn("[GD Connect Theme] Error loading alumni:", error);
+        renderer(wrapper, placeholders[blockName] || []);
+      }
       return;
     }
 
@@ -621,9 +714,70 @@ export default apiInitializer("0.11.3", (api) => {
     }
   };
 
+  // Helper to show alumni username configuration guide
+  const logAlumniHelper = () => {
+    console.groupCollapsed(
+      "%c[GD Connect Theme] Alumni Spotlight Configuration Helper",
+      "color: #0ca08e; font-weight: bold; font-size: 12px;"
+    );
+
+    console.log(
+      "%cTo configure alumni spotlight:",
+      "font-weight: bold; color: #1f2b2e;"
+    );
+    console.log(
+      "1. Go to Admin → Customize → Themes → Air → Components → Air Home Landing"
+    );
+    console.log("2. Find the 'alumni_usernames' setting");
+    console.log("3. Enter a comma-separated list of usernames (max 6)");
+
+    console.log(
+      "%cExample configuration:",
+      "font-weight: bold; color: #0ca08e; margin-top: 10px;"
+    );
+    console.log(
+      "%cjohn_doe,jane_smith,alumni_mentor",
+      "background: #f6fbfb; padding: 4px 8px; border-radius: 4px; font-family: monospace;"
+    );
+
+    console.log(
+      "%cCurrent configuration:",
+      "font-weight: bold; color: #1f2b2e; margin-top: 10px;"
+    );
+    const currentUsernames =
+      settings.alumni_usernames || "(empty - using alumni_endpoint or placeholders)";
+    console.log(
+      `%c${currentUsernames}`,
+      "background: #f6fbfb; padding: 4px 8px; border-radius: 4px; font-family: monospace;"
+    );
+
+    console.log(
+      "%cData fetched from user profiles:",
+      "font-weight: bold; color: #1f2b2e; margin-top: 10px;"
+    );
+    console.log("• Name: user.name or user.username");
+    console.log("• Avatar: user.avatar_template");
+    console.log("• Degree (title): user_fields[19]");
+    console.log("• College: user_fields[18]");
+    console.log("• Location: user_fields[17]");
+
+    console.log(
+      "%cNote:",
+      "font-weight: bold; color: #20a6c9; margin-top: 10px;"
+    );
+    console.log(
+      "If any custom field is empty, it will be hidden in the card display."
+    );
+
+    console.groupEnd();
+  };
+
   // Log available slugs once on initial load to help with configuration
   if (window.location.pathname === "/" || window.location.pathname === "/categories") {
-    setTimeout(logAvailableSlugs, 1000);
+    setTimeout(() => {
+      logAvailableSlugs();
+      logAlumniHelper();
+    }, 1000);
   }
 
   api.onPageChange(() => injectLanding());

@@ -19,8 +19,14 @@ hero_stat_3:
 show_alumni_spotlight:
   type: bool
   default: true
+alumni_usernames:
+  type: string
+  list: true
+  default: ""
+  description: "Comma-separated list of usernames to feature in alumni spotlight (max 6). Example: john_doe,jane_smith,alumni_user. Leave empty to use alumni_endpoint. Open browser console on homepage to see configuration helper."
 alumni_endpoint:
   default: ""
+  description: "Optional external API endpoint for alumni data. If alumni_usernames is set, this will be ignored and user profiles will be fetched instead."
 show_most_talked:
   type: bool
   default: true
