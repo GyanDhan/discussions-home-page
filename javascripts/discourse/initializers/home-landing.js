@@ -561,7 +561,8 @@ export default apiInitializer("0.11.3", (api) => {
 
         if (username) {
           try {
-            api.composer.open({
+            const composer = api.container.lookup("controller:composer");
+            composer.open({
               action: "privateMessage",
               recipients: username,
               archetypeId: "private_message",

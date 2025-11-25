@@ -171,7 +171,7 @@ These are hardcoded in `CUSTOM_FIELD_IDS` (home-landing.js:16-20):
 If any custom field is empty, that field is completely hidden from the card (no blank space).
 
 **Message Button Behavior:**
-The "Message" button on alumni cards opens Discourse's native message composer modal (via `api.composer.open()`), allowing users to send private messages without leaving the page. This provides the same UX as clicking "Message" on a user's profile.
+The "Message" button on alumni cards opens Discourse's native message composer modal (via `api.container.lookup("controller:composer").open()`), allowing users to send private messages without leaving the page. This provides the same UX as clicking "Message" on a user's profile.
 
 **Console Helper:**
 On homepage load, an "Alumni Spotlight Configuration Helper" appears in console with:
