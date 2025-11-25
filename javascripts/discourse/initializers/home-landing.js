@@ -548,6 +548,37 @@ const buildHomeHtml = (s) => {
 };
 
 export default apiInitializer("0.11.3", (api) => {
+  // Setup message button click handler using event delegation
+  const attachMessageHandlers = (container) => {
+    console.log("[GD Connect Theme] Setting up message button event delegation");
+
+    container.addEventListener("click", (e) => {
+      const btn = e.target.closest(".gh-message-btn");
+      if (btn) {
+        e.preventDefault();
+        const username = btn.dataset.username;
+        console.log("[GD Connect Theme] Message button clicked for:", username);
+
+        if (username) {
+          try {
+            api.composer.open({
+              action: "privateMessage",
+              recipients: username,
+              archetypeId: "private_message",
+            });
+            console.log("[GD Connect Theme] Composer opened for:", username);
+          } catch (error) {
+            console.error("[GD Connect Theme] Error opening composer:", error);
+          }
+        } else {
+          console.warn("[GD Connect Theme] No username found on button");
+        }
+      }
+    });
+
+    console.log("[GD Connect Theme] Message button event delegation setup complete");
+  };
+
   const loadBlock = async (wrapper, endpoint) => {
     const blockName = wrapper.dataset.block;
     const renderer = renderers[blockName];
@@ -625,22 +656,6 @@ export default apiInitializer("0.11.3", (api) => {
         }
       });
     }
-
-    // Setup message buttons for alumni cards
-    const messageButtons = root.querySelectorAll(".gh-message-btn");
-    messageButtons.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const username = btn.dataset.username;
-        if (username) {
-          api.composer.open({
-            action: "privateMessage",
-            recipients: username,
-            archetypeId: "private_message",
-          });
-        }
-      });
-    });
   };
 
   const injectLanding = () => {
@@ -672,6 +687,9 @@ export default apiInitializer("0.11.3", (api) => {
       container.innerHTML = buildHomeHtml(settings);
       container.dataset.hydrated = "true";
       hydrate(container);
+
+      // Setup event delegation for message buttons on the container
+      attachMessageHandlers(container);
     }
   };
 
