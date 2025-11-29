@@ -136,7 +136,7 @@ const renderTopics = (block, topics) => {
     return;
   }
 
-  const cards = topics.slice(0, 6).map((topic) => {
+  const cards = topics.slice(0, 3).map((topic) => {
     const title = escapeHtml(topic.title || "Topic");
     const link = topic.url || `/t/${topic.slug}/${topic.id}`;
     const replies = topic.posts_count ?? topic.reply_count ?? topic.replies;
@@ -434,8 +434,8 @@ const buildHomeHtml = (s) => {
     <section class="gh-section">
       <div class="gh-section__header">
         <div>
-          <p class="gh-section__eyebrow">Alumni Spotlight</p>
-          <h2>Talk to alumni</h2>
+          <h1 class="gh-section__eyebrow">Alumni Spotlight</h1>
+          <h3>Talk to alumni</h3>
           <p class="gh-section__sub">Get real advice from people who have been there.</p>
         </div>
       </div>
@@ -454,7 +454,7 @@ const buildHomeHtml = (s) => {
     <section class="gh-section">
       <div class="gh-section__header">
         <div>
-          <p class="gh-section__eyebrow">Most Talked Topics</p>
+          <h1 class="gh-section__eyebrow">Most Talked Topics</h1>
           <h2>Trending conversations</h2>
         </div>
         <div class="gh-filter">
@@ -483,7 +483,7 @@ const buildHomeHtml = (s) => {
     <div class="gh-section__col">
       <div class="gh-section__header">
         <div>
-          <p class="gh-section__eyebrow">Latest</p>
+          <h1 class="gh-section__eyebrow">Latest</h1>
           <h2>Latest</h2>
         </div>
         <a class="gh-link" href="/latest">View all</a>
@@ -503,7 +503,7 @@ const buildHomeHtml = (s) => {
     <div class="gh-section__col">
       <div class="gh-section__header">
         <div>
-          <p class="gh-section__eyebrow">Most Popular Courses</p>
+          <h1 class="gh-section__eyebrow">Most Popular Courses</h1>
           <h2>Courses loved by peers</h2>
         </div>
       </div>
@@ -522,7 +522,7 @@ const buildHomeHtml = (s) => {
     <div class="gh-section__col">
       <div class="gh-section__header">
         <div>
-          <p class="gh-section__eyebrow">Upcoming Events</p>
+          <h1 class="gh-section__eyebrow">Upcoming Events</h1>
           <h2>Upcoming Events</h2>
         </div>
       </div>
@@ -540,7 +540,7 @@ const buildHomeHtml = (s) => {
     <div class="gh-section__col">
       <div class="gh-section__header">
         <div>
-          <p class="gh-section__eyebrow">Explore Categories</p>
+          <h1 class="gh-section__eyebrow">Explore Categories</h1>
           <h2>Browse by interest</h2>
         </div>
         <a class="gh-link" href="/categories">View all</a>
