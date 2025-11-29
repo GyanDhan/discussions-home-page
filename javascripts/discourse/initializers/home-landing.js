@@ -424,6 +424,7 @@ const buildHomeHtml = (s) => {
         </div>
       </div>
       <div class="gh-hero__art">
+        <img class="gh-hero__image" src="${escapeHtml(s.hero_image_url || "/images/405.jpeg")}" alt="${escapeHtml(s.hero_image_alt || "Hero image")}" />
         <div class="gh-hero__blob"></div>
       </div>
     </section>
