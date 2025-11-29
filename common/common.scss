@@ -463,302 +463,330 @@
 
 
 
+/* home-landing.pixel.scss
+   Pixel-closer version to match the provided screenshot.
+   Uses class names from home-landing.js exactly.
+*/
 
-
-/* ------------------------------------------------------------
-   GLOBAL
------------------------------------------------------------- */
-:root {
-  --gh-bg: #eef8f7;
+/* ---------- Variables (tweak for exact color match) ---------- */
+:root{
+  --gh-bg: #eaf7f6;
   --gh-surface: #ffffff;
   --gh-primary: #0ca08e;
   --gh-primary-strong: #0b8f7f;
   --gh-accent: #20a6c9;
-  --gh-text: #1f2b2e;
+  --gh-text: #0f2b2e;
+  --muted: rgba(31,43,46,0.58);
+  --card-shadow: 0 18px 40px rgba(12,34,36,0.06);
+  --card-shadow-strong: 0 32px 70px rgba(12,34,36,0.09);
 }
 
-body {
-  background: var(--gh-bg);
-  font-family: "Inter", sans-serif;
-}
-
-/* ------------------------------------------------------------
-   MAIN LANDING WRAPPER
------------------------------------------------------------- */
-.gh-home {
-  width: 100%;
-  padding: 28px;
-  background: var(--gh-bg);
-  display: flex;
-  flex-direction: column;
-  gap: 38px;
-}
-
-/* ------------------------------------------------------------
-   HERO SECTION
------------------------------------------------------------- */
-.gh-hero {
-  background: var(--gh-surface);
-  border-radius: 26px;
-  padding: 42px;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 32px;
-  box-shadow: 0 20px 40px rgba(10, 36, 30, 0.1);
-}
-
-.gh-hero__copy h1 {
-  font-size: 42px;
-  font-weight: 800;
-  margin: 0 0 12px;
-  color: var(--gh-primary);
-}
-
-.gh-hero__subtitle {
-  font-size: 15px;
-  color: rgba(31,43,46,0.75);
-  margin-bottom: 20px;
-}
-
-.gh-hero__actions {
-  display: flex;
-  gap: 14px;
-  margin-bottom: 30px;
-}
-
-.gh-button {
-  padding: 12px 20px;
-  border-radius: 30px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.gh-button--primary {
-  background: var(--gh-primary);
-  color: #fff;
-  box-shadow: 0 10px 25px rgba(12,160,142,0.22);
-}
-
-.gh-button--ghost {
-  background: rgba(12,160,142,0.1);
-  border: 1px solid rgba(12,160,142,0.15);
-  color: var(--gh-primary);
-}
-
-.gh-hero__art {
-  background: linear-gradient(145deg, #b8eef1, #81d9e7, #58c6d9);
-  border-radius: 20px;
-}
-
-/* ------------------------------------------------------------
-   SECTION HEADERS
------------------------------------------------------------- */
-.gh-section {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.gh-section__header {
-  display: flex;
-  justify-content: space-between;
-  align-items:center;
-  margin-bottom: 4px;
-}
-
-.gh-section__eyebrow {
-  font-size: 15px;
-  font-weight: 700;
+/* ---------- Page wrapper ---------- */
+.gh-home{
+  background: linear-gradient(180deg, rgba(12,160,142,0.03), rgba(32,166,201,0.01));
+  padding: 32px;
+  box-sizing: border-box;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
   color: var(--gh-text);
-  margin:0;
-}
-
-.gh-section__header h2 {
-  font-size: 14px;
-  margin: 2px 0 0 0;
-  color: rgba(31,43,46,0.55);
-}
-
-/* ------------------------------------------------------------
-   GRID LAYOUTS
------------------------------------------------------------- */
-.gh-card-grid,
-.gh-card-list {
-  display: grid;
-  gap: 18px;
-}
-
-.gh-card-grid--three {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.gh-section--two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display:flex;
+  flex-direction:column;
   gap: 28px;
 }
 
-/* ------------------------------------------------------------
-   BASE CARD
------------------------------------------------------------- */
-.gh-card {
+/* ---------- Hero ---------- */
+.gh-hero{
   background: var(--gh-surface);
-  padding: 18px;
+  border-radius: 28px;
+  padding: 48px;
+  display: grid;
+  grid-template-columns: 1fr 560px;
+  gap: 36px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(31,43,46,0.03);
+  overflow: hidden;
+}
+
+/* Hero copy */
+.gh-hero__copy .gh-hero__eyebrow{ font-size:14px; color:var(--muted); margin:0 0 6px; font-weight:600; }
+.gh-hero__copy h1{
+  font-size:46px;
+  line-height:0.98;
+  margin:0 0 12px;
+  color: var(--gh-primary);
+  font-weight:800;
+}
+.gh-hero__subtitle{
+  font-size:15px;
+  color: rgba(31,43,46,0.75);
+  max-width: 620px;
+  margin-bottom: 20px;
+}
+
+/* Hero CTAs */
+.gh-hero__actions{ display:flex; gap:12px; align-items:center; margin-bottom:22px; }
+.gh-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 22px;
+  border-radius:30px;
+  font-weight:700;
+  font-size:14px;
+  text-decoration:none;
+  cursor:pointer;
+  border:none;
+}
+.gh-button--primary{
+  background: linear-gradient(180deg,var(--gh-primary),var(--gh-primary-strong));
+  color:#fff;
+  box-shadow: 0 12px 36px rgba(12,160,142,0.14);
+}
+.gh-button--ghost{
+  background: rgba(12,160,142,0.08);
+  color: var(--gh-primary);
+  border: 1px solid rgba(12,160,142,0.14);
+}
+
+/* Hero art (right) */
+.gh-hero__art{
+  border-radius: 22px;
+  background: linear-gradient(150deg, #c7f0ee 0%, #8fe0df 45%, #74d6d8 100%);
+  box-shadow: inset 0 -40px 80px rgba(255,255,255,0.12);
+  min-height: 220px;
+}
+
+/* ---------- Section headers ---------- */
+.gh-section{ display:flex; flex-direction:column; gap:12px; }
+.gh-section__header{ display:flex; justify-content:space-between; align-items:flex-end; gap:12px; }
+.gh-section__eyebrow{ font-size:16px; font-weight:700; color:var(--gh-text); margin:0; }
+.gh-section__header h2{ margin:0; font-size:13px; color:var(--muted); font-weight:600; }
+
+/* ---------- Grids ---------- */
+.gh-card-grid, .gh-card-list, .gh-category-grid{
+  display:grid;
+  gap: 16px;
+}
+.gh-card-grid--three{ grid-template-columns: repeat(3, 1fr); }
+.gh-card-list{ grid-template-columns: repeat(2, 1fr); }
+
+/* two-col wrapper used for Latest / Courses and Events / Categories */
+.gh-section--two-col{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items:start;
+}
+
+/* ---------- Card base ---------- */
+.gh-card{
+  background: var(--gh-surface);
   border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(12,34,36,0.08);
-  border: 1px solid rgba(31,43,46,0.05);
-  display:flex;
-  flex-direction:column;
-  gap: 8px;
-  transition: all .18s ease;
-}
-
-.gh-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 40px rgba(12,34,36,0.12);
-}
-
-/* ------------------------------------------------------------
-   ALUMNI CARDS
------------------------------------------------------------- */
-.gh-card--person {
-  display: flex;
-  flex-direction: row;
-  gap: 14px;
-  padding: 18px;
-}
-
-.gh-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.gh-person__meta {
-  display:flex;
-  flex-direction:column;
-  gap: 4px;
-}
-
-.gh-person__name {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--gh-text);
-}
-
-.gh-person__title {
-  font-size: 13px;
-  color: rgba(31,43,46,0.65);
-}
-
-/* ------------------------------------------------------------
-   TOPIC CARDS (Latest + Most Talked)
------------------------------------------------------------- */
-.gh-card--topic {
   padding: 16px;
-  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(31,43,46,0.035);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s ease;
+  overflow:hidden;
+}
+.gh-card:hover{ transform: translateY(-6px); box-shadow: var(--card-shadow-strong); }
+
+/* ---------- Alumni card (person) ---------- */
+.gh-card--person{
+  display:flex;
+  flex-direction:row;
+  align-items:flex-start;
+  gap:14px;
+  padding:18px;
+  border-radius:14px;
+}
+.gh-avatar{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+  box-shadow: 0 6px 18px rgba(12,34,36,0.06);
+}
+.gh-person__meta{ display:flex; flex-direction:column; gap:6px; width:100%; }
+.gh-person__name{ font-size:15px; font-weight:700; color:var(--gh-text); margin:0; }
+.gh-person__title{ font-size:13px; color:var(--muted); margin:0; }
+.gh-person__meta .gh-button{ margin-top:8px; padding:10px 16px; border-radius:12px; font-size:13px; align-self:flex-start; }
+
+/* ---------- Topic / Latest small cards ---------- */
+.gh-card--topic{
+  padding:14px;
+  border-radius:12px;
+  min-height:92px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.gh-card--topic .gh-card__title{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--gh-text);
+  margin:0 0 6px;
+}
+.gh-card--topic .gh-card__meta{
+  font-size:12px;
+  color:var(--muted);
+  margin:0;
 }
 
-.gh-card--topic .gh-card__title {
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: var(--gh-text);
+/* small hashtag pills */
+.gh-card__tag{
+  display:inline-block;
+  font-size:12px;
+  color: var(--gh-primary);
+  margin-right:6px;
+  background: rgba(12,160,142,0.06);
+  padding:6px 8px;
+  border-radius:10px;
 }
 
-.gh-card__meta {
-  font-size: 12px;
-  color: rgba(31,43,46,0.6);
+/* ---------- Course cards (most popular) ---------- */
+.gh-card--course{
+  padding:18px;
+  border-radius:14px;
+  min-height:100px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
-
-/* ------------------------------------------------------------
-   COURSE CARDS
------------------------------------------------------------- */
-.gh-card--course {
-  padding: 18px;
-  border-radius: 14px;
+.gh-card--course .gh-card__title{
+  font-size:14.5px;
+  font-weight:800;
+  margin:0 0 6px;
 }
-
-.gh-card--course .gh-card__title {
-  font-size: 14px;
-  font-weight: 800;
-  margin-bottom: 6px;
+.gh-card--course .gh-card__meta{
+  font-size:13px;
+  color:var(--muted);
+  margin:0;
 }
-
-.gh-card--course .gh-card__footer {
+.gh-card--course .gh-card__footer{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top: 10px;
+  gap:12px;
+  margin-top:8px;
 }
-
-.gh-card--course span {
-  font-weight:700;
-  font-size: 14px;
-  color: rgba(31,43,46,0.85);
-}
-
-/* ------------------------------------------------------------
-   EVENT CARDS
------------------------------------------------------------- */
-.gh-card--event {
-  display:flex;
-  flex-direction:column;
-  gap: 12px;
-  padding: 14px;
-}
-
-.gh-event__thumb {
-  width:100%;
-  height:120px;
-  object-fit:cover;
-  border-radius: 12px;
-}
-
-/* ------------------------------------------------------------
-   CATEGORY CHIPS
------------------------------------------------------------- */
-.gh-chip {
-  display:inline-flex;
-  padding: 12px 14px;
-  font-size:14px;
-  background: var(--gh-surface);
+.gh-card--course .gh-button{
+  padding:8px 14px;
   border-radius:12px;
-  border:1px solid rgba(31,43,46,0.06);
-  box-shadow: 0 10px 22px rgba(12,34,36,0.05);
-  color: var(--gh-text);
-  font-weight:600;
+  font-weight:700;
+  font-size:13px;
+  min-width:100px;
+  text-align:center;
+  border:1px solid rgba(12,160,142,0.14);
+  background:transparent;
+  color: var(--gh-primary);
 }
 
-/* ------------------------------------------------------------
-   RESPONSIVE
------------------------------------------------------------- */
-@media (max-width: 1100px) {
-  .gh-hero {
-    grid-template-columns: 1fr;
-  }
+/* Price styling */
+.gh-card--course .price{ font-weight:800; color:var(--gh-text); font-size:14px; }
 
-  .gh-section--two-col {
-    grid-template-columns: 1fr;
-  }
-
-  .gh-card-grid--three {
-    grid-template-columns: 1fr 1fr;
-  }
+/* ---------- Event cards ---------- */
+.gh-card--event{
+  padding:12px;
+  border-radius:14px;
+}
+.gh-event__thumb{
+  width:100%;
+  height:128px;
+  object-fit:cover;
+  border-radius:12px;
+  display:block;
+  box-shadow: 0 8px 24px rgba(12,34,36,0.06);
+}
+.gh-card--event .gh-card__title{
+  font-size:14px;
+  font-weight:700;
+  margin:8px 0 4px;
 }
 
-@media (max-width: 600px) {
-  .gh-card-grid--three {
-    grid-template-columns: 1fr;
-  }
-
-  .gh-home {
-    padding: 20px;
-  }
+/* Register CTA on events */
+.gh-card--event .gh-button{
+  padding:8px 12px;
+  border-radius:12px;
+  font-weight:700;
+  border:1px solid rgba(12,160,142,0.12);
+  background: rgba(12,160,142,0.06);
+  color: var(--gh-primary);
 }
+
+/* Date badge (top-left of image) — implement in markup if desired */
+.gh-event__date{
+  position: absolute;
+  transform: translateY(6px);
+  background: var(--gh-primary);
+  color:#fff;
+  padding:6px 10px;
+  border-radius:10px;
+  font-weight:700;
+  font-size:12px;
+  box-shadow:0 8px 18px rgba(12,160,142,0.12);
+}
+
+/* ---------- Categories grid (tiles) ---------- */
+.gh-category-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:16px;
+}
+.gh-chip{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:16px;
+  border-radius:12px;
+  background:var(--gh-surface);
+  box-shadow: 0 12px 26px rgba(12,34,36,0.05);
+  border:1px solid rgba(31,43,46,0.03);
+  font-weight:700;
+  color:var(--gh-text);
+}
+
+/* small icon circle inside category tile (if markup uses .cat-icon) */
+.cat-icon{
+  width:48px;
+  height:48px;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(12,160,142,0.06);
+  color: var(--gh-primary);
+  font-size:20px;
+}
+
+/* ---------- Micro adjustments to match spacing precisely ---------- */
+.gh-card + .gh-card{ margin-top: 0; } /* rely on grid gap */
+.gh-card__title{ line-height:1.1; }
+.gh-card__meta{ line-height:1.25; }
+
+/* reduce gaps in stacked areas to match screenshot */
+.gh-alumni { margin-top: 6px; }
+.gh-topics { margin-top: 10px; }
+.gh-latest-courses { margin-top: 8px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px){
+  .gh-hero{ grid-template-columns: 1fr; padding:28px; gap:18px; }
+  .gh-section--two-col{ grid-template-columns: 1fr; gap:20px; }
+  .gh-card-grid--three{ grid-template-columns: 1fr 1fr; }
+  .gh-card-list{ grid-template-columns: 1fr; }
+  .gh-category-grid{ grid-template-columns: repeat(2,1fr); }
+}
+
+@media (max-width: 600px){
+  .gh-home{ padding:18px; }
+  .gh-hero{ padding:18px; border-radius:18px; }
+  .gh-hero__copy h1{ font-size:28px; }
+  .gh-card{ padding:12px; border-radius:12px; }
+  .gh-card-grid--three{ grid-template-columns: 1fr; }
+  .gh-category-grid{ grid-template-columns: 1fr; }
+}
+
+/* ---------- End ---------- */
