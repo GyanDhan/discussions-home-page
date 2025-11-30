@@ -404,8 +404,9 @@ const buildHomeHtml = (s) => {
   const stat3 = escapeHtml(s.hero_stat_3 || "");
 
   const hero = `
-    <section class="gh-hero">
-      <div class="gh-hero__copy">
+    <section class="gh-hero gh-hero--background" style="background-image: url('/images/GDC Banner.png');">
+      <div class="gh-hero__overlay"></div>
+      <div class="gh-hero__content">
         <p class="gh-hero__eyebrow">GD Connect</p>
         <h1>${escapeHtml(s.hero_title || "")}</h1>
         <p class="gh-hero__subtitle">${escapeHtml(s.hero_subtitle || "")}</p>
@@ -422,10 +423,6 @@ const buildHomeHtml = (s) => {
           <div class="gh-stat">${stat2}</div>
           <div class="gh-stat">${stat3}</div>
         </div>
-      </div>
-      <div class="gh-hero__art">
-        <img class="gh-hero__image" src="${escapeHtml(s.hero_image_url || "/images/405.jpeg")}" alt="${escapeHtml(s.hero_image_alt || "Hero image")}" />
-        <div class="gh-hero__blob"></div>
       </div>
     </section>
   `;
