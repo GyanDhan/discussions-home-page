@@ -136,7 +136,7 @@ const renderTopics = (block, topics) => {
     return;
   }
 
-  const cards = topics.slice(0, 3).map((topic) => {
+  const cards = topics.slice(0, 4).map((topic) => {
     const title = escapeHtml(topic.title || "Topic");
     const link = topic.url || `/t/${topic.slug}/${topic.id}`;
     const replies = topic.posts_count ?? topic.reply_count ?? topic.replies;
