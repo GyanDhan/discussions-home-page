@@ -136,7 +136,7 @@ const renderTopics = (block, topics) => {
     return;
   }
 
-  const cards = topics.slice(0, 2).map((topic) => {
+  const cards = topics.slice(0, 3).map((topic) => {
     const title = escapeHtml(topic.title || "Topic");
     const link = topic.url || `/t/${topic.slug}/${topic.id}`;
     const replies = topic.posts_count ?? topic.reply_count ?? topic.replies;
@@ -165,7 +165,7 @@ const renderCourses = (block, courses) => {
     return;
   }
 
-  const cards = courses.slice(0, 2).map((course) => {
+  const cards = courses.slice(0, 3).map((course) => {
     const title = escapeHtml(course.title || "Course");
     const desc = escapeHtml(course.description || course.subtitle || "");
     const price = escapeHtml(course.price || "");
@@ -194,7 +194,7 @@ const renderEvents = (block, events) => {
     return;
   }
 
-  const cards = events.slice(0, 2).map((event) => {
+  const cards = events.slice(0, 4).map((event) => {
     const title = escapeHtml(event.title || "Event");
     const date = escapeHtml(event.date || event.starts_at || "");
     const location = escapeHtml(event.location || event.mode || "");
