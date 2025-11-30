@@ -165,7 +165,7 @@ const renderCourses = (block, courses) => {
     return;
   }
 
-  const cards = courses.slice(0, 3).map((course) => {
+  const cards = courses.slice(0, 4).map((course) => {
     const title = escapeHtml(course.title || "Course");
     const desc = escapeHtml(course.description || course.subtitle || "");
     const price = escapeHtml(course.price || "");
@@ -368,9 +368,12 @@ const placeholders = {
     { title: "Staying in Europe or moving to Australia?", slug: "europe-aus", id: 6, posts_count: 4, views: 95 },
   ],
   "popular-courses": [
-    { title: "Course Title", description: "Course", price: "$5,000", cta_label: "Learn More" },
-    { title: "Prerequisite Course", description: "Course", price: "$3,200", cta_label: "Learn More" },
-    { title: "Advanced Topics", description: "Course", price: "$4,500", cta_label: "Learn More" },
+    { title: "MS in Computer Science", Duration: "18-24 Months", price: "$50k-$70k", cta_label: "Learn More" },
+    { title: "Global MBA", Duration: "12-24 Months", price: "$70k-$100k", cta_label: "Learn More" },
+    { title: "MSC in Data Science", Duration: "12-18 Months", price: "$40k-$60k", cta_label: "Learn More" },
+    { title: "Masters of Eng. Management", Duration: "12-15 Months", price: "$45k-$65k", cta_label: "Learn More" },
+
+
   ],
   events: [
     {
@@ -433,7 +436,7 @@ const buildHomeHtml = (s) => {
       <div class="gh-section__header">
         <div>
           <h1 class="gh-section__eyebrow">Alumni Spotlight</h1>
-          <h3>Talk to alumni</h3>
+          <h2>Talk to alumni</h2>
           <p class="gh-section__sub">Get real advice from people who have been there.</p>
         </div>
       </div>
