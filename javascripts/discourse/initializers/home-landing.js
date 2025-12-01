@@ -160,6 +160,17 @@ const renderTopics = (block, topics) => {
   removeSkeleton(block);
 };
 
+// Country flag mapping
+const countryFlags = {
+  "US": "🇺🇸", "USA": "🇺🇸",
+  "UK": "🇬🇧", "United Kingdom": "🇬🇧",
+  "Australia": "🇦🇺", "AU": "🇦🇺",
+  "Canada": "🇨🇦", "CA": "🇨🇦",
+  "Germany": "🇩🇪", "DE": "🇩🇪",
+  "Ireland": "🇮🇪", "IE": "🇮🇪",
+  "France": "🇫🇷", "FR": "🇫🇷"
+};
+
 const renderCourses = (block, courses) => {
   if (!courses?.length) {
     renderEmpty(block);
@@ -168,17 +179,46 @@ const renderCourses = (block, courses) => {
 
   const cards = courses.slice(0, 4).map((course) => {
     const title = escapeHtml(course.title || "Course");
-    const desc = escapeHtml(course.description || course.subtitle || "");
+    const countries = course.countries || [];
     const price = escapeHtml(course.price || "");
     const cta = escapeHtml(course.cta_label || "Learn more");
     const href = course.url || course.cta_url || "#";
 
+    // Generate country flags
+    const countryFlags_html = countries.slice(0, 5).map(country => {
+      const flag = countryFlags[country] || "🌍";
+      return `<span class="gh-country-flag" title="${country}">${flag}</span>`;
+    }).join("");
+
+    // Show "+ X more" if there are more than 5 countries
+    const moreCountries = countries.length > 5 ? 
+      `<span class="gh-country-more">+${countries.length - 5} more</span>` : '';
+
     return `
       <article class="gh-card gh-card--course">
         <h3 class="gh-card__title">${title}</h3>
-        <p class="gh-card__meta">${desc}</p>
+        <div class="gh-card__details">
+          ${countries.length > 0 ? `
+            <div class="gh-card__meta">
+              <svg class="gh-icon gh-icon--location" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              <div class="gh-countries">
+                ${countryFlags_html}
+                ${moreCountries}
+              </div>
+            </div>
+          ` : ''}
+          ${price ? `
+            <div class="gh-card__meta">
+              <svg class="gh-icon gh-icon--price" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+              </svg>
+              <span>Starts at: <strong>${price}</strong></span>
+            </div>
+          ` : ''}
+        </div>
         <div class="gh-card__footer">
-          <span>${price}</span>
           <a class="gh-button gh-button--ghost" href="${href}">${cta}</a>
         </div>
       </article>
@@ -369,12 +409,30 @@ const placeholders = {
     { title: "Staying in Europe or moving to Australia?", slug: "europe-aus", id: 6, posts_count: 4, views: 95 },
   ],
   "popular-courses": [
-    { title: "MS in Computer Science", Duration: "18-24 Months", price: "$50k-$70k", cta_label: "Learn More" },
-    { title: "Global MBA", Duration: "12-24 Months", price: "$70k-$100k", cta_label: "Learn More" },
-    { title: "MSC in Data Science", Duration: "12-18 Months", price: "$40k-$60k", cta_label: "Learn More" },
-    { title: "Masters of Eng. Management", Duration: "12-15 Months", price: "$45k-$65k", cta_label: "Learn More" },
-
-
+    { 
+      title: "MS in Computer Science", 
+      countries: ["US", "Australia", "Canada", "Germany"], 
+      price: "INR 4 Lakhs", 
+      cta_label: "Learn More" 
+    },
+    { 
+      title: "Global MBA", 
+      countries: ["US", "UK", "Australia", "Canada", "Ireland"], 
+      price: "INR 3 Lakhs", 
+      cta_label: "Learn More" 
+    },
+    { 
+      title: "MSc in Data Science", 
+      countries: ["Germany", "USA", "Australia", "France"], 
+      price: "INR 3 Lakhs", 
+      cta_label: "Learn More" 
+    },
+    { 
+      title: "Master of Eng. Management", 
+      countries: ["US", "UK", "Germany"], 
+      price: "INR 4 Lakhs", 
+      cta_label: "Learn More" 
+    },
   ],
   events: [
     {

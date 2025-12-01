@@ -53,7 +53,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
 }
 
 .gh-hero__content {
@@ -63,6 +62,7 @@
   color: white;
   max-width: 600px;
   padding: 2rem;
+  width:50%;
 }
 
 .gh-hero--background .gh-hero__eyebrow {
@@ -157,25 +157,26 @@
 }
 
 .gh-button--ghost {
-  background: #ffffff;
-  color: var(--gh-primary-strong);
-  border: 1px solid var(--gh-border);
+  background: var(--gh-primary);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(12, 160, 142, 0.2);
+
 }
 
 .gh-hero__stats {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 30px 0px 20px 0px;
   flex-wrap: wrap;
 }
 
 .gh-stat {
-  background: rgba(255, 255, 255, 0.9);
+  
   border-radius: var(--gh-radius);
   padding: 8px 10px;
   font-weight: 600;
-  color: var(--gh-primary-strong);
-  border: 1px solid rgba(12, 160, 142, 0.12);
+ 
+  
 }
 
 .gh-section {
