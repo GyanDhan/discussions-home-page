@@ -501,7 +501,7 @@ const buildHomeHtml = (s) => {
       <div class="gh-section__header">
         <div>
           <h1 class="gh-section__eyebrow">Latest</h1>
-          <h2>Latest</h2>
+          <h2>Topics You May Have Missed</h2>
         </div>
         <a class="gh-link" href="/latest">View all</a>
       </div>
