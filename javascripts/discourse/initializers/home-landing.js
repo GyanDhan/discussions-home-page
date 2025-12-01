@@ -737,9 +737,18 @@ export default apiInitializer("0.11.3", (api) => {
       })
       .then((data) => {
         if (blockName === "categories") {
-          renderer(wrapper, filterCategories(normalize(data), settings));
+          const filtered = filterCategories(normalize(data), settings);
+          renderer(
+            wrapper,
+            filtered && filtered.length ? filtered : placeholders.categories
+          );
         } else {
-          renderer(wrapper, normalize(data));
+          const normalized = normalize(data);
+          if (!normalized || !normalized.length) {
+            renderer(wrapper, placeholders[blockName] || []);
+          } else {
+            renderer(wrapper, normalized);
+          }
         }
       })
       .catch(() =>
