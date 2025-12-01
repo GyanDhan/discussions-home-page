@@ -1,6 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
 
-const heroImageUrl = 'https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/gyandhan_asset/document/15249/herobackgroundimg_0ead87ba496e3c12490f.png';
+const heroImageUrl = 'https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/gyandhan_asset/document/15434/GDC_Banner__1__52463ab7818b22c0c1bf.png';
 const escapeHtml = (value) =>
   (value || "")
     .replace(/&/g, "&amp;")
@@ -377,25 +377,25 @@ const filterCategories = (cats, s) => {
 const placeholders = {
   alumni: [
     {
-      name: "Akash Tandon",
-      title: "Data Science @ UCLA",
-      university: "Los Angeles, USA",
+      name: "Diksha Sinha",
+      title: "M.Sc Marketing",
+      university: "Queen Mary University, London",
       cta_label: "Message",
-      avatar: "https://placehold.co/90x90?text=AT",
+      avatar: "https://placehold.co/90x90?text=DS",
     },
     {
-      name: "John Elbert",
-      title: "ML Engineer @ MIT",
-      university: "Massachusetts, USA",
+      name: "Gayatree Borul",
+      title: "MS Electrical Engineering and IT ",
+      university: "Applied science University of Darmstadt, Germany",
       cta_label: "Message",
-      avatar: "https://placehold.co/90x90?text=JE",
+      avatar: "https://placehold.co/90x90?text=GB",
     },
     {
-      name: "Anay Kular",
-      title: "FinTech @ Oxford",
-      university: "Oxford, UK",
+      name: "Palak Ranjan",
+      title: "LLM Transnational Crime and Justice",
+      university: "UNICRI, Italy",
       cta_label: "Message",
-      avatar: "https://placehold.co/90x90?text=AK",
+      avatar: "https://placehold.co/90x90?text=PR",
     },
   ],
   "most-talked": [
