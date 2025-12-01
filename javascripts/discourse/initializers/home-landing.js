@@ -181,8 +181,6 @@ const renderCourses = (block, courses) => {
     const title = escapeHtml(course.title || "Course");
     const countries = course.countries || [];
     const price = escapeHtml(course.price || "");
-    const cta = escapeHtml(course.cta_label || "Learn more");
-    const href = course.url || course.cta_url || "#";
 
     // Generate country flags
     const countryFlags_html = countries.slice(0, 5).map(country => {
@@ -217,9 +215,6 @@ const renderCourses = (block, courses) => {
               <span>Starts at: <strong>${price}</strong></span>
             </div>
           ` : ''}
-        </div>
-        <div class="gh-card__footer">
-          <a class="gh-button gh-button--ghost" href="${href}">${cta}</a>
         </div>
       </article>
     `;
@@ -265,13 +260,18 @@ const renderCategories = (block, categories) => {
     return;
   }
 
-  const chips = categories.map((cat) => {
-    const name = escapeHtml(cat.name || "Category");
-    const href = cat.url || `/c/${cat.slug}/${cat.id}`;
-    return `<a class="gh-chip" href="${href}">${name}</a>`;
-  });
+  const chips = categories.map((category) => {
+    const name = escapeHtml(category.name || "Category");
+    const url = category.url || `/c/${category.slug}/${category.id}`;
+    
+    return `
+      <a class="gh-chip" href="${url}" target="_blank" rel="noopener">
+        ${name}
+      </a>
+    `;
+  }).join("");
 
-  block.innerHTML = chips.join("");
+  block.innerHTML = chips;
   removeSkeleton(block);
 };
 
@@ -413,25 +413,21 @@ const placeholders = {
       title: "MS in Computer Science", 
       countries: ["US", "Australia", "Canada", "Germany"], 
       price: "INR 4 Lakhs", 
-      // cta_label: "Learn More" 
     },
     { 
       title: "Global MBA", 
       countries: ["US", "UK", "Australia", "Canada", "Ireland"], 
       price: "INR 3 Lakhs", 
-      // cta_label: "Learn More" 
     },
     { 
       title: "MSc in Data Science", 
       countries: ["Germany", "USA", "Australia", "France"], 
       price: "INR 3 Lakhs", 
-      // cta_label: "Learn More" 
     },
     { 
       title: "Master of Eng. Management", 
       countries: ["US", "UK", "Germany"], 
       price: "INR 4 Lakhs", 
-      // cta_label: "Learn More" 
     },
   ],
   events: [
