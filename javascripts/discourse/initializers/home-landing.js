@@ -1,5 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
 
+const heroImageUrl = 'https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/gyandhan_asset/document/15249/herobackgroundimg_0ead87ba496e3c12490f.png';
 const escapeHtml = (value) =>
   (value || "")
     .replace(/&/g, "&amp;")
@@ -167,7 +168,7 @@ const renderCourses = (block, courses) => {
 
   const cards = courses.slice(0, 4).map((course) => {
     const title = escapeHtml(course.title || "Course");
-    const duration = escapeHtml(course.Duration || course.duration || "");
+    const desc = escapeHtml(course.description || course.subtitle || "");
     const price = escapeHtml(course.price || "");
     const cta = escapeHtml(course.cta_label || "Learn more");
     const href = course.url || course.cta_url || "#";
@@ -175,25 +176,9 @@ const renderCourses = (block, courses) => {
     return `
       <article class="gh-card gh-card--course">
         <h3 class="gh-card__title">${title}</h3>
-        <div class="gh-card__details">
-          ${duration ? `
-            <div class="gh-card__meta">
-              <svg class="gh-icon gh-icon--duration" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
-              </svg>
-              <span>${duration}</span>
-            </div>
-          ` : ''}
-          ${price ? `
-            <div class="gh-card__meta">
-              <svg class="gh-icon gh-icon--price" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-              </svg>
-              <span>${price}</span>
-            </div>
-          ` : ''}
-        </div>
+        <p class="gh-card__meta">${desc}</p>
         <div class="gh-card__footer">
+          <span>${price}</span>
           <a class="gh-button gh-button--ghost" href="${href}">${cta}</a>
         </div>
       </article>
@@ -423,7 +408,7 @@ const buildHomeHtml = (s) => {
   const stat3 = escapeHtml(s.hero_stat_3 || "");
 
   const hero = `
-    <section class="gh-hero gh-hero--background" style="background-image: url('/images/GDC Banner.png');">
+    <section class="gh-hero gh-hero--background" style="background-image: url(${heroImageUrl});">
       <div class="gh-hero__overlay"></div>
       <div class="gh-hero__content">
         <p class="gh-hero__eyebrow">GD Connect</p>
