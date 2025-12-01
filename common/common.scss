@@ -66,7 +66,7 @@
 }
 
 .gh-hero--background .gh-hero__eyebrow {
-  color: hsl(181.56deg 53.62% 26.67%);
+  color: rgb(32, 103, 104);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   font-size: x-large;
   font-weight: 600;
@@ -85,7 +85,7 @@
 }
 
 .gh-hero--background .gh-hero__subtitle {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgb(32, 103, 104);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   font-size: 1.25rem;
   line-height: 1.6;
@@ -160,6 +160,7 @@
   background: var(--gh-primary);
   color: #fff;
   box-shadow: 0 10px 30px rgba(12, 160, 142, 0.2);
+  width: max-content;
 
 }
 
@@ -409,9 +410,10 @@
 
 .gh-category-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, 1fr);
-  gap: 12px;
+  gap: 20px;
+  padding: inherit;
 }
 
 @media (max-width: 960px) {
