@@ -447,12 +447,42 @@ const placeholders = {
     },
   ],
   categories: [
-    { name: "Students", slug: "students", id: 1 },
-    { name: "Education", slug: "education", id: 2 },
-    { name: "Cultural", slug: "cultural", id: 3 },
-    { name: "Engineering", slug: "engineering", id: 4 },
-    { name: "Research", slug: "research", id: 5 },
-    { name: "Social", slug: "social", id: 6 },
+    { 
+      name: "Videshi Chai", 
+      slug: "videshi-chai", 
+      id: 190,
+      url: "https://discussions.gyandhan.com/c/videshi-chai/190"
+    },
+    { 
+      name: "Scholarships", 
+      slug: "scholarships", 
+      id: 53,
+      url: "https://discussions.gyandhan.com/c/scholarships/53"
+    },
+    { 
+      name: "Accommodation", 
+      slug: "accommodation", 
+      id: 214,
+      url: "https://discussions.gyandhan.com/c/accommodation/214"
+    },
+    { 
+      name: "University Discussions", 
+      slug: "university-discussions", 
+      id: 39,
+      url: "https://discussions.gyandhan.com/c/university-discussions/39"
+    },
+    { 
+      name: "Newsverse", 
+      slug: "newsverse", 
+      id: 52,
+      url: "https://discussions.gyandhan.com/c/newsverse/52"
+    },
+    { 
+      name: "Articles", 
+      slug: "articles", 
+      id: 216,
+      url: "https://discussions.gyandhan.com/c/articles/216"
+    },
   ],
 };
 
