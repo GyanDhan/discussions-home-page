@@ -413,25 +413,25 @@ const placeholders = {
       title: "MS in Computer Science", 
       countries: ["US", "Australia", "Canada", "Germany"], 
       price: "INR 4 Lakhs", 
-      cta_label: "Learn More" 
+      // cta_label: "Learn More" 
     },
     { 
       title: "Global MBA", 
       countries: ["US", "UK", "Australia", "Canada", "Ireland"], 
       price: "INR 3 Lakhs", 
-      cta_label: "Learn More" 
+      // cta_label: "Learn More" 
     },
     { 
       title: "MSc in Data Science", 
       countries: ["Germany", "USA", "Australia", "France"], 
       price: "INR 3 Lakhs", 
-      cta_label: "Learn More" 
+      // cta_label: "Learn More" 
     },
     { 
       title: "Master of Eng. Management", 
       countries: ["US", "UK", "Germany"], 
       price: "INR 4 Lakhs", 
-      cta_label: "Learn More" 
+      // cta_label: "Learn More" 
     },
   ],
   events: [

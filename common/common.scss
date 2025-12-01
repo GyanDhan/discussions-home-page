@@ -66,9 +66,9 @@
 }
 
 .gh-hero--background .gh-hero__eyebrow {
-  color: rgba(255, 255, 255, 0.9);
+  color: hsl(181.56deg 53.62% 26.67%);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  font-size: 0.875rem;
+  font-size: x-large;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -106,7 +106,7 @@
 }
 
 .gh-hero--background .gh-stat {
-  color: rgba(255, 255, 255, 0.9);
+  color:hsl(181.56deg 53.62% 26.67%);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   font-weight: 600;
 }
@@ -175,8 +175,8 @@
   border-radius: var(--gh-radius);
   padding: 8px 10px;
   font-weight: 600;
- 
-  
+  color: #055b55;
+  font-size: large;
 }
 
 .gh-section {
@@ -381,18 +381,46 @@
 }
 
 .gh-chip {
-  padding: 8px 10px;
-  border-radius: var(--gh-radius-sm);
+  padding: 16px 12px;
+  border-radius: var(--gh-radius);
   border: 1px solid var(--gh-border);
-  background: #fff;
+  background: var(--gh-surface);
   font-weight: 600;
+  font-size: 14px;
   text-align: center;
+  color: #2c3e50; // Match other font colors
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(12, 34, 36, 0.04);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(12, 160, 142, 0.1);
+    border-color: var(--gh-primary);
+    color: var(--gh-primary);
+  }
 }
 
 .gh-category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 960px) {
+  .gh-category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .gh-category-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 1fr);
+  }
 }
 
 .gh-skeleton .gh-card,
@@ -565,6 +593,9 @@
   .gh-card__title {
     color: #2c3e50; // Dark blue-gray for course titles
     font-weight: 600;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
   }
 
   .gh-card__meta {
@@ -579,30 +610,117 @@
   .gh-icon {
     flex-shrink: 0;
     
-    &.gh-icon--duration {
-      color: #0ca08e; // Clock icon in teal
+    &.gh-icon--location {
+      color: #e74c3c; // Red for location icon
     }
     
     &.gh-icon--price {
-      color: #f7931e; // Wallet icon in orange
+      color: #f7931e; // Orange for price icon
     }
+  }
+
+  .gh-countries {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .gh-country-flag {
+    position: relative;
+    font-size: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #e1e8ea;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      transform: scale(1.1);
+      border-color: #0ca08e;
+      box-shadow: 0 4px 12px rgba(12, 160, 142, 0.2);
+    }
+
+    // Tooltip on hover
+    &:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2c3e50;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+      margin-bottom: 0.25rem;
+    }
+
+    &:hover::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid transparent;
+      border-top-color: #2c3e50;
+      z-index: 10;
+    }
+  }
+
+  .gh-country-more {
+    font-size: 0.75rem;
+    color: #95a5a6;
+    font-weight: 600;
+    background: #ecf0f1;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50px;
+    border: 1px solid #bdc3c7;
   }
 
   .gh-card__footer {
     margin-top: auto;
     padding-top: 1rem;
-    border-top: 1px solid var(--primary-low);
+    border-top: 1px solid var(--gh-border);
     display: flex;
     justify-content: flex-end;
   }
 
   .gh-button--ghost {
     color: #0ca08e; // Teal color for CTA buttons
-    border-color: #0ca08e;
+    border: 1px solid #0ca08e;
+    background: transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
     
     &:hover {
       background-color: #0ca08e;
       color: #ffffff;
+    }
+  }
+}
+
+// Responsive adjustments for course cards
+@media (max-width: 768px) {
+  .gh-card--course {
+    .gh-countries {
+      gap: 0.25rem;
+    }
+    
+    .gh-country-flag {
+      width: 28px;
+      height: 28px;
+      font-size: 1rem;
     }
   }
 }
