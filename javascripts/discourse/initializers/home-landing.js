@@ -1,6 +1,7 @@
 import { apiInitializer } from "discourse/lib/api";
 
 const heroImageUrl = 'https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/gyandhan_asset/document/15434/GDC_Banner__1__52463ab7818b22c0c1bf.png';
+const SIGNUP_URL = "/signup";
 const escapeHtml = (value) =>
   (value || "")
     .replace(/&/g, "&amp;")
@@ -486,7 +487,8 @@ const placeholders = {
   ],
 };
 
-const buildHomeHtml = (s) => {
+const buildHomeHtml = (s, options = {}) => {
+  const { isLoggedIn = false, signupUrl = SIGNUP_URL } = options;
   const stat1 = escapeHtml(s.hero_stat_1 || "");
   const stat2 = escapeHtml(s.hero_stat_2 || "");
   const stat3 = escapeHtml(s.hero_stat_3 || "");
@@ -499,12 +501,12 @@ const buildHomeHtml = (s) => {
         <h1>${escapeHtml(s.hero_title || "")}</h1>
         <p class="gh-hero__subtitle">${escapeHtml(s.hero_subtitle || "")}</p>
         <div class="gh-hero__actions">
-          <a class="gh-button gh-button--primary" href="${escapeHtml(
-            s.cta_primary_url || "/"
-          )}">${escapeHtml(s.cta_primary_label || "Explore")}</a>
-          <a class="gh-button gh-button--ghost" href="${escapeHtml(
-            s.cta_secondary_url || "/"
-          )}">${escapeHtml(s.cta_secondary_label || "Join")}</a>
+          <a class="gh-button gh-button--primary" href="${heroPrimaryHref}">${escapeHtml(
+            s.cta_primary_label || "Explore"
+          )}</a>
+          <a class="gh-button gh-button--ghost" href="${heroSecondaryHref}">${escapeHtml(
+            s.cta_secondary_label || "Join"
+          )}</a>
         </div>
         <div class="gh-hero__stats">
           <div class="gh-stat">${stat1}</div>
@@ -651,14 +653,20 @@ const buildHomeHtml = (s) => {
 };
 
 export default apiInitializer("0.11.3", (api) => {
+  const isUserLoggedIn = () => Boolean(api.getCurrentUser());
+
   // Setup message button click handler using event delegation
-  const attachMessageHandlers = (container) => {
+  const attachMessageHandlers = (container, { signupUrl }) => {
     console.log("[GD Connect Theme] Setting up message button event delegation");
 
     container.addEventListener("click", (e) => {
       const btn = e.target.closest(".gh-message-btn");
       if (btn) {
         e.preventDefault();
+        if (!isUserLoggedIn()) {
+          window.location.href = signupUrl;
+          return;
+        }
         const username = btn.dataset.username;
         console.log("[GD Connect Theme] Message button clicked for:", username);
 
@@ -797,12 +805,15 @@ export default apiInitializer("0.11.3", (api) => {
     }
     container.style.display = "block";
     if (!container.dataset.hydrated) {
-      container.innerHTML = buildHomeHtml(settings);
+      container.innerHTML = buildHomeHtml(settings, {
+        isLoggedIn: isUserLoggedIn(),
+        signupUrl: SIGNUP_URL,
+      });
       container.dataset.hydrated = "true";
       hydrate(container);
 
       // Setup event delegation for message buttons on the container
-      attachMessageHandlers(container);
+      attachMessageHandlers(container, { signupUrl: SIGNUP_URL });
     }
   };
 
