@@ -492,6 +492,12 @@ const buildHomeHtml = (s, options = {}) => {
   const stat1 = escapeHtml(s.hero_stat_1 || "");
   const stat2 = escapeHtml(s.hero_stat_2 || "");
   const stat3 = escapeHtml(s.hero_stat_3 || "");
+  const heroPrimaryHref = escapeHtml(
+    !isLoggedIn ? signupUrl : s.cta_primary_url || "/"
+  );
+  const heroSecondaryHref = escapeHtml(
+    !isLoggedIn ? signupUrl : s.cta_secondary_url || "/"
+  );
 
   const hero = `
     <section class="gh-hero gh-hero--background" style="background-image: url(${heroImageUrl});">
