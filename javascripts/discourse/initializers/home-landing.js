@@ -322,6 +322,35 @@ const isLandingRoute = () => {
   return path === "" || path === "/" || path === "/categories";
 };
 
+const isLoginRoute = (pageSetting = "both") => {
+  const path = (window.location.pathname || "/").replace(/\/+$/, "");
+
+  if (pageSetting === "signup") {
+    return path === "/signup";
+  } else if (pageSetting === "login") {
+    return path === "/login";
+  }
+  // "both" or any other value
+  return path === "/login" || path === "/signup";
+};
+
+// Build login video HTML
+const buildLoginVideoHtml = (videoId) => {
+  if (!videoId) return "";
+  const escapedVideoId = escapeHtml(videoId);
+  return `
+    <div class="gh-login-video">
+      <iframe
+        src="https://www.youtube.com/embed/${escapedVideoId}?rel=0&modestbranding=1"
+        title="Welcome Video"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  `;
+};
+
 const filterCategories = (cats, s) => {
   const limit = Number(s.categories_limit || 6) || 6;
   const slugsRaw = s.categories_slugs || [];
@@ -944,6 +973,87 @@ export default apiInitializer("0.11.3", (api) => {
     }, 1000);
   }
 
-  api.onPageChange(() => injectLanding());
+  // Login video injection
+  let loginVideoObserver = null;
+
+  const injectLoginVideo = () => {
+    // Clean up previous observer if exists
+    if (loginVideoObserver) {
+      loginVideoObserver.disconnect();
+      loginVideoObserver = null;
+    }
+
+    if (!isLoginRoute(settings.login_video_pages)) return;
+    if (!settings.show_login_video || !settings.login_video_youtube_id) return;
+
+    const videoHtml = buildLoginVideoHtml(settings.login_video_youtube_id);
+    if (!videoHtml) return;
+
+    // Function to inject video into the login modal
+    const tryInjectVideo = () => {
+      // Check if already injected
+      if (document.querySelector(".gh-login-video")) return true;
+
+      // Try to find the login modal
+      const loginModal = document.querySelector(".login-modal, .d-modal.login-modal, #login-form, .login-modal-body");
+      if (!loginModal) return false;
+
+      // Desktop: inject into right pane (above social logins)
+      const rightSide = loginModal.querySelector(".login-right-side");
+      if (rightSide && !rightSide.querySelector(".gh-login-video")) {
+        rightSide.insertAdjacentHTML("afterbegin", videoHtml);
+        console.log("[GD Connect Theme] Login video injected (desktop - right side)");
+        return true;
+      }
+
+      // Mobile/Alternative: inject after welcome header or at the top of form
+      const welcomeHeader = loginModal.querySelector(".login-welcome-header, .login-title, .modal-header");
+      if (welcomeHeader && !welcomeHeader.parentElement.querySelector(".gh-login-video")) {
+        welcomeHeader.insertAdjacentHTML("afterend", videoHtml);
+        console.log("[GD Connect Theme] Login video injected (mobile - after header)");
+        return true;
+      }
+
+      // Fallback: inject at the beginning of the modal body
+      const modalBody = loginModal.querySelector(".modal-body, .login-form");
+      if (modalBody && !modalBody.querySelector(".gh-login-video")) {
+        modalBody.insertAdjacentHTML("afterbegin", videoHtml);
+        console.log("[GD Connect Theme] Login video injected (fallback - modal body)");
+        return true;
+      }
+
+      return false;
+    };
+
+    // Try immediate injection
+    if (tryInjectVideo()) return;
+
+    // Set up observer to wait for modal to render
+    loginVideoObserver = new MutationObserver(() => {
+      if (tryInjectVideo()) {
+        loginVideoObserver.disconnect();
+        loginVideoObserver = null;
+      }
+    });
+
+    loginVideoObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // Safety timeout to disconnect observer after 10 seconds
+    setTimeout(() => {
+      if (loginVideoObserver) {
+        loginVideoObserver.disconnect();
+        loginVideoObserver = null;
+      }
+    }, 10000);
+  };
+
+  api.onPageChange(() => {
+    injectLanding();
+    injectLoginVideo();
+  });
   injectLanding();
+  injectLoginVideo();
 });
