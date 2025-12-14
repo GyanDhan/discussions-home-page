@@ -985,7 +985,19 @@
 }
 
 // Course card styling with updated font colors
+.gh-card-list--courses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
 .gh-card--course {
+  .gh-card__head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
   .gh-card__details {
     display: flex;
     flex-direction: column;
