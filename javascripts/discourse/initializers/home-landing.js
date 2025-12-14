@@ -516,6 +516,46 @@ const placeholders = {
   ],
 };
 
+const buildHeroStats = (stats) => {
+  const cards = stats
+    .map((value) =>
+      value
+        ? `
+      <div class="gh-stat-card">
+        <span class="gh-stat-card__value">${value}</span>
+      </div>
+    `
+        : ""
+    )
+    .filter(Boolean)
+    .join("");
+
+  return cards ? `<div class="gh-hero__stat-grid">${cards}</div>` : "";
+};
+
+const wrapLayout = (blocks, modifier) => {
+  const content = blocks.filter(Boolean);
+  if (!content.length) {
+    return "";
+  }
+
+  const items = content
+    .map(
+      (markup) => `
+        <div class="gh-layout__item">
+          ${markup}
+        </div>
+      `
+    )
+    .join("");
+
+  return `
+    <section class="gh-layout ${modifier}">
+      ${items}
+    </section>
+  `;
+};
+
 const buildHomeHtml = (s, options = {}) => {
   const { isLoggedIn = false, signupUrl = SIGNUP_URL } = options;
   const stat1 = escapeHtml(s.hero_stat_1 || "");
@@ -527,26 +567,32 @@ const buildHomeHtml = (s, options = {}) => {
   const heroSecondaryHref = escapeHtml(
     !isLoggedIn ? signupUrl : s.cta_secondary_url || "/"
   );
+  const heroAlt = escapeHtml(s.hero_image_alt || "Hero image");
+  const heroStats = buildHeroStats([stat1, stat2, stat3]);
 
   const hero = `
-    <section class="gh-hero gh-hero--background" style="background-image: url(${heroImageUrl});">
-      <div class="gh-hero__overlay"></div>
-      <div class="gh-hero__content">
-        <p class="gh-hero__eyebrow">GD Connect</p>
-        <h1>${escapeHtml(s.hero_title || "")}</h1>
-        <p class="gh-hero__subtitle">${escapeHtml(s.hero_subtitle || "")}</p>
-        <div class="gh-hero__actions">
-          <a class="gh-button gh-button--primary" href="${heroPrimaryHref}">${escapeHtml(
-            s.cta_primary_label || "Explore"
-          )}</a>
-          <a class="gh-button gh-button--ghost" href="${heroSecondaryHref}">${escapeHtml(
-            s.cta_secondary_label || "Join"
-          )}</a>
+    <section class="gh-hero">
+      <div class="gh-hero__glow"></div>
+      <div class="gh-hero__inner">
+        <div class="gh-hero__copy">
+          <p class="gh-hero__eyebrow">GD Connect</p>
+          <h1>${escapeHtml(s.hero_title || "")}</h1>
+          <p class="gh-hero__subtitle">${escapeHtml(s.hero_subtitle || "")}</p>
+          <div class="gh-hero__actions">
+            <a class="gh-button gh-button--primary" href="${heroPrimaryHref}">${escapeHtml(
+              s.cta_primary_label || "Explore"
+            )}</a>
+            <a class="gh-button gh-button--ghost" href="${heroSecondaryHref}">${escapeHtml(
+              s.cta_secondary_label || "Join"
+            )}</a>
+          </div>
+          ${heroStats}
         </div>
-        <div class="gh-hero__stats">
-          <div class="gh-stat">${stat1}</div>
-          <div class="gh-stat">${stat2}</div>
-          <div class="gh-stat">${stat3}</div>
+        <div class="gh-hero__visual">
+          <div class="gh-hero__image" style="background-image: url(${heroImageUrl});" role="img" aria-label="${heroAlt}"></div>
+          <div class="gh-hero__badge">
+            <span>Community powered journeys</span>
+          </div>
         </div>
       </div>
     </section>
@@ -554,137 +600,155 @@ const buildHomeHtml = (s, options = {}) => {
 
   const alumni = s.show_alumni_spotlight
     ? `
-    <section class="gh-section">
-      <div class="gh-section__header">
+    <section class="gh-panel gh-panel--alumni">
+      <header class="gh-panel__header">
         <div>
-          <h1 class="gh-section__eyebrow">Alumni Spotlight</h1>
+          <p class="gh-panel__eyebrow">Alumni Spotlight</p>
           <h2>Talk to alumni</h2>
-          <p class="gh-section__sub">Get real advice from people who have been there.</p>
+          <p class="gh-panel__summary">Get real advice from people who have already made the leap.</p>
         </div>
-      </div>
-      <div class="gh-card-grid gh-card-grid--three gh-skeleton" data-block="alumni" data-endpoint="${escapeHtml(
-        s.alumni_endpoint || ""
-      )}">
-        <div class="gh-card gh-card--person"></div>
-        <div class="gh-card gh-card--person"></div>
-        <div class="gh-card gh-card--person"></div>
+      </header>
+      <div class="gh-panel__body">
+        <div class="gh-card-grid gh-card-grid--stretch gh-skeleton" data-block="alumni" data-endpoint="${escapeHtml(
+          s.alumni_endpoint || ""
+        )}">
+          <div class="gh-card gh-card--person"></div>
+          <div class="gh-card gh-card--person"></div>
+          <div class="gh-card gh-card--person"></div>
+        </div>
       </div>
     </section>`
     : "";
 
   const mostTalked = s.show_most_talked
     ? `
-    <section class="gh-section">
-      <div class="gh-section__header">
+    <section class="gh-panel gh-panel--topics">
+      <header class="gh-panel__header">
         <div>
-          <h1 class="gh-section__eyebrow">Most Talked Topics</h1>
+          <p class="gh-panel__eyebrow">Most Talked Topics</p>
           <h2>Trending conversations</h2>
         </div>
-        <div class="gh-filter">
-          <select id="gh-trending-filter" data-period="">
-            <option value="">All time</option>
-            <option value='yearly'>Year</option>
-            <option value='quarterly'>Quarter</option>
-            <option value='monthly'>Month</option>
-            <option value='weekly'>Week</option>
-            <option value='daily'>Day</option>
-          </select>
+        <div class="gh-panel__toolbar">
+          <label class="gh-select">
+            <span>Timeframe</span>
+            <select id="gh-trending-filter" data-period="">
+              <option value="">All time</option>
+              <option value='yearly'>Year</option>
+              <option value='quarterly'>Quarter</option>
+              <option value='monthly'>Month</option>
+              <option value='weekly'>Week</option>
+              <option value='daily'>Day</option>
+            </select>
+          </label>
         </div>
-      </div>
-      <div class="gh-card-grid gh-card-grid--three gh-skeleton" data-block="most-talked" data-endpoint="${escapeHtml(
-        s.most_talked_endpoint || ""
-      )}">
-        <div class="gh-card gh-card--topic"></div>
-        <div class="gh-card gh-card--topic"></div>
-        <div class="gh-card gh-card--topic"></div>
+      </header>
+      <div class="gh-panel__body">
+        <div class="gh-card-grid gh-card-grid--topics gh-skeleton" data-block="most-talked" data-endpoint="${escapeHtml(
+          s.most_talked_endpoint || ""
+        )}">
+          <div class="gh-card gh-card--topic"></div>
+          <div class="gh-card gh-card--topic"></div>
+          <div class="gh-card gh-card--topic"></div>
+        </div>
       </div>
     </section>`
     : "";
 
   const latest = s.show_latest
     ? `
-    <div class="gh-section__col">
-      <div class="gh-section__header">
+    <section class="gh-panel gh-panel--latest">
+      <header class="gh-panel__header">
         <div>
-          <h1 class="gh-section__eyebrow">Latest</h1>
-          <h2>Topics You May Have Missed</h2>
+          <p class="gh-panel__eyebrow">Latest</p>
+          <h2>Topics you may have missed</h2>
         </div>
         <a class="gh-link" href="/latest">View all</a>
+      </header>
+      <div class="gh-panel__body">
+        <div class="gh-card-grid gh-card-grid--topics gh-skeleton" data-block="latest" data-endpoint="${escapeHtml(
+          s.latest_endpoint || "/latest.json"
+        )}">
+          <div class="gh-card gh-card--topic"></div>
+          <div class="gh-card gh-card--topic"></div>
+          <div class="gh-card gh-card--topic"></div>
+        </div>
       </div>
-      <div class="gh-card-list gh-skeleton" data-block="latest" data-endpoint="${escapeHtml(
-        s.latest_endpoint || "/latest.json"
-      )}">
-        <div class="gh-card gh-card--topic"></div>
-        <div class="gh-card gh-card--topic"></div>
-        <div class="gh-card gh-card--topic"></div>
-      </div>
-    </div>`
+    </section>`
     : "";
 
   const courses = s.show_popular_courses
     ? `
-    <div class="gh-section__col">
-      <div class="gh-section__header">
+    <section class="gh-panel gh-panel--courses">
+      <header class="gh-panel__header">
         <div>
-          <h1 class="gh-section__eyebrow">Most Popular Courses</h1>
+          <p class="gh-panel__eyebrow">Most Popular Courses</p>
           <h2>Courses loved by peers</h2>
+          <p class="gh-panel__summary">Hand-picked programs and shortlists curated from community chatter.</p>
+        </div>
+      </header>
+      <div class="gh-panel__body">
+        <div class="gh-card-list gh-card-list--courses gh-skeleton" data-block="popular-courses" data-endpoint="${escapeHtml(
+          s.popular_courses_endpoint || ""
+        )}">
+          <div class="gh-card gh-card--course"></div>
+          <div class="gh-card gh-card--course"></div>
+          <div class="gh-card gh-card--course"></div>
         </div>
       </div>
-      <div class="gh-card-list gh-skeleton" data-block="popular-courses" data-endpoint="${escapeHtml(
-        s.popular_courses_endpoint || ""
-      )}">
-        <div class="gh-card gh-card--course"></div>
-        <div class="gh-card gh-card--course"></div>
-        <div class="gh-card gh-card--course"></div>
-      </div>
-    </div>`
+    </section>`
     : "";
 
   const events = s.show_events
     ? `
-    <div class="gh-section__col">
-      <div class="gh-section__header">
+    <section class="gh-panel gh-panel--events">
+      <header class="gh-panel__header">
         <div>
-          <h1 class="gh-section__eyebrow">Upcoming Events</h1>
-          <h2>Upcoming Events</h2>
+          <p class="gh-panel__eyebrow">Upcoming Events</p>
+          <h2>Join live workshops</h2>
+          <p class="gh-panel__summary">Webinars, AMAs, and meetups designed to unblock your next milestone.</p>
+        </div>
+      </header>
+      <div class="gh-panel__body">
+        <div class="gh-card-list gh-card-list--events gh-skeleton" data-block="events" data-endpoint="${escapeHtml(
+          s.events_endpoint || ""
+        )}">
+          <div class="gh-card gh-card--event"></div>
+          <div class="gh-card gh-card--event"></div>
         </div>
       </div>
-      <div class="gh-card-list gh-card-list--events gh-skeleton" data-block="events" data-endpoint="${escapeHtml(
-        s.events_endpoint || ""
-      )}">
-        <div class="gh-card gh-card--event"></div>
-        <div class="gh-card gh-card--event"></div>
-      </div>
-    </div>`
+    </section>`
     : "";
 
   const categories = s.show_categories
     ? `
-    <div class="gh-section__col">
-      <div class="gh-section__header">
+    <section class="gh-panel gh-panel--categories">
+      <header class="gh-panel__header">
         <div>
-          <h1 class="gh-section__eyebrow">Explore Categories</h1>
+          <p class="gh-panel__eyebrow">Explore Categories</p>
           <h2>Browse by interest</h2>
+          <p class="gh-panel__summary">Jump into the spaces that match your current planning sprint.</p>
         </div>
         <a class="gh-link" href="/categories">View all</a>
+      </header>
+      <div class="gh-panel__body">
+        <div class="gh-chip-cloud gh-skeleton" data-block="categories" data-endpoint="${escapeHtml(
+          s.categories_endpoint || "/categories.json"
+        )}">
+          <div class="gh-chip"></div>
+          <div class="gh-chip"></div>
+          <div class="gh-chip"></div>
+          <div class="gh-chip"></div>
+          <div class="gh-chip"></div>
+          <div class="gh-chip"></div>
+        </div>
       </div>
-      <div class="gh-category-grid gh-skeleton" data-block="categories" data-endpoint="${escapeHtml(
-        s.categories_endpoint || "/categories.json"
-      )}">
-        <div class="gh-chip"></div>
-        <div class="gh-chip"></div>
-        <div class="gh-chip"></div>
-        <div class="gh-chip"></div>
-        <div class="gh-chip"></div>
-        <div class="gh-chip"></div>
-      </div>
-    </div>`
+    </section>`
     : "";
+  const spotlightRow = wrapLayout([alumni, mostTalked], "gh-layout--spotlight");
+  const insightsRow = wrapLayout([latest, courses], "gh-layout--insights");
+  const exploreRow = wrapLayout([events, categories], "gh-layout--explore");
 
-  const twoCol1 = latest || courses ? `<section class="gh-section gh-section--two-col">${latest}${courses}</section>` : "";
-  const twoCol2 = events || categories ? `<section class="gh-section gh-section--two-col">${events}${categories}</section>` : "";
-
-  return `${hero}${alumni}${mostTalked}${twoCol1}${twoCol2}`;
+  return `${hero}${spotlightRow}${insightsRow}${exploreRow}`;
 };
 
 export default apiInitializer("0.11.3", (api) => {
