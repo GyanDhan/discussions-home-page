@@ -80,8 +80,8 @@ show_login_video:
   description: "Show a YouTube video on the login/signup page"
 login_video_youtube_id:
   type: string
-  default: ""
-  description: "YouTube video ID (e.g., 'dQw4w9WgXcQ' from youtube.com/watch?v=dQw4w9WgXcQ). Leave empty to hide the video."
+  default: "https://drive.google.com/file/d/1BJK4hpmaAiBCkynPW5rtHST-XFy4Lp3o/view"
+  description: "YouTube video ID (e.g., 'dQw4w9WgXcQ' from youtube.com/watch?v=dQw4w9WgXcQ) or a direct video link such as a YouTube/Drive URL. Leave empty to hide the video."
 login_video_pages:
   type: enum
   default: "signup"

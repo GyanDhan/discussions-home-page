@@ -100,25 +100,29 @@ const cards = alumni
 const name = escapeHtml(person.name || "Alumnus");
 const title = escapeHtml(person.title || person.subtitle || "");
 const university = escapeHtml(person.university || person.location || "");
-const bio = escapeHtml(person.bio || "An alumnus of " + university + ", " + name.split(' ')[0] + " was working as Data Engineer- SQL .....");
+const cta = escapeHtml(person.cta_label || "Message");
 const avatar = person.avatar || person.avatar_template;
+const href = person.cta_url || person.url || "#";
 const avatarUrl = avatar
 ? avatar.replace("{size}", "90")
 : "https://placehold.co/90x90?text=Alumni";
 
-const titleHtml = title ? `<p class="gh-mobile-alumni-card__degree">Degree- ${title}</p>` : "";
+const titleHtml = title
+? `<p class="gh-person__title">${title}</p>`
+: "";
+const universityHtml = university
+? `<p class="gh-card__meta">${university}</p>`
+: "";
 
 return `
-       <article class="gh-mobile-alumni-card">
-         <div class="gh-mobile-alumni-card__avatar-wrapper">
-           <img class="gh-mobile-alumni-card__avatar" src="${avatarUrl}" alt="${name}">
+       <article class="gh-card gh-card--person">
+         <img class="gh-avatar" src="${avatarUrl}" alt="${name}">
+         <div class="gh-person__meta">
+           <p class="gh-person__name">${name}</p>
+           ${titleHtml}
+           ${universityHtml}
+           <button class="gh-button gh-button--ghost gh-message-btn" data-username="${escapeHtml(person.username || '')}">${cta}</button>
          </div>
-         <h3 class="gh-mobile-alumni-card__name">${name}</h3>
-         <p class="gh-mobile-alumni-card__university">${university}</p>
-         ${titleHtml}
-         <div class="gh-mobile-alumni-card__divider"></div>
-         <p class="gh-mobile-alumni-card__bio">${bio}</p>
-         <button class="gh-mobile-button gh-mobile-button--primary gh-mobile-alumni-card__cta gh-message-btn" data-username="${escapeHtml(person.username || '')}">Message</button>
        </article>
      `;
 })
@@ -134,62 +138,23 @@ renderEmpty(block);
 return;
 }
 
-// Check if this is for the "Latest" section (grid layout)
-const isLatestGrid = block.classList.contains('gh-mobile-latest-grid');
-const displayCount = isLatestGrid ? 2 : 3;
-
-const cards = topics.slice(0, displayCount).map((topic) => {
+const cards = topics.slice(0, 6).map((topic) => {
 const title = escapeHtml(topic.title || "Topic");
 const link = topic.url || `/t/${topic.slug}/${topic.id}`;
 const replies = topic.posts_count ?? topic.reply_count ?? topic.replies;
 const views = topic.views;
 const tags = topic.tags || [];
 
-if (isLatestGrid) {
-// Latest grid card with tags
-const tagsHtml = tags
-.slice(0, 3)
-.map((tag) => `<span class="gh-mobile-tag-chip">${escapeHtml(tag)}</span>`)
-.join("");
-
 return `
-       <article class="gh-mobile-latest-card">
-         <p class="gh-mobile-latest-card__title">${title}</p>
-         <div class="gh-mobile-latest-card__meta">
-           <svg class="gh-mobile-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
-             <path d="M12.8333 8.75003V11.0834C12.8333 11.4616 12.6829 11.8244 12.4172 12.0901C12.1515 12.3557 11.7887 12.5062 11.4105 12.5062H2.92267C2.5445 12.5062 2.18165 12.3557 1.91597 12.0901C1.65029 11.8244 1.49988 11.4616 1.49988 11.0834V8.75003M4.25532 5.83337L7.16643 8.75003M7.16643 8.75003L10.0775 5.83337M7.16643 8.75003V1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-           </svg>
-           <span>${replies || 0} replies</span>
-           <span class="gh-mobile-meta-dot">•</span>
-           <svg class="gh-mobile-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
-             <path d="M0.583496 7.2295C0.583496 7.2295 2.91683 2.5625 7.00016 2.5625C11.0835 2.5625 13.4168 7.2295 13.4168 7.2295C13.4168 7.2295 11.0835 11.8958 7.00016 11.8958C2.91683 11.8958 0.583496 7.2295 0.583496 7.2295Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-             <path d="M7 9.04163C7.99754 9.04163 8.80625 8.23292 8.80625 7.23538C8.80625 6.23783 7.99754 5.42913 7 5.42913C6.00246 5.42913 5.19375 6.23783 5.19375 7.23538C5.19375 8.23292 6.00246 9.04163 7 9.04163Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-           </svg>
-           <span>${views || 0} Views</span>
-         </div>
-         <div class="gh-mobile-tag-list">${tagsHtml}</div>
-       </article>
-     `;
-} else {
-// Most Talked Topics card
-return `
-       <article class="gh-mobile-topic-card">
-         <p class="gh-mobile-topic-card__title">${title}</p>
-         <div class="gh-mobile-topic-card__meta">
-           <svg class="gh-mobile-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
-             <path d="M12.8333 8.75003V11.0834C12.8333 11.4616 12.6829 11.8244 12.4172 12.0901C12.1515 12.3557 11.7887 12.5062 11.4105 12.5062H2.92267C2.5445 12.5062 2.18165 12.3557 1.91597 12.0901C1.65029 11.8244 1.49988 11.4616 1.49988 11.0834V8.75003M4.25532 5.83337L7.16643 8.75003M7.16643 8.75003L10.0775 5.83337M7.16643 8.75003V1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-           </svg>
-           <span>${replies || 0} replies</span>
-           <span class="gh-mobile-meta-dot">•</span>
-           <svg class="gh-mobile-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
-             <path d="M0.583496 7.2295C0.583496 7.2295 2.91683 2.5625 7.00016 2.5625C11.0835 2.5625 13.4168 7.2295 13.4168 7.2295C13.4168 7.2295 11.0835 11.8958 7.00016 11.8958C2.91683 11.8958 0.583496 7.2295 0.583496 7.2295Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-             <path d="M7 9.04163C7.99754 9.04163 8.80625 8.23292 8.80625 7.23538C8.80625 6.23783 7.99754 5.42913 7 5.42913C6.00246 5.42913 5.19375 6.23783 5.19375 7.23538C5.19375 8.23292 6.00246 9.04163 7 9.04163Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-           </svg>
-           <span>${views || 0} Views</span>
-         </div>
-       </article>
-     `;
-}
+     <article class="gh-card gh-card--topic">
+       <a class="gh-card__title" href="${link}">${title}</a>
+       <p class="gh-card__meta">${replies || 0} replies · ${views || 0} views</p>
+       <div>${tags
+         .slice(0, 2)
+         .map((tag) => `<span class="gh-card__tag">#${escapeHtml(tag)}</span>`)
+         .join("")}</div>
+     </article>
+   `;
 });
 
 block.innerHTML = cards.join("");
@@ -213,23 +178,50 @@ renderEmpty(block);
 return;
 }
 
-const items = courses.slice(0, 3).map((course) => {
+const cards = courses.slice(0, 4).map((course) => {
 const title = escapeHtml(course.title || "Course");
+const countries = course.countries || [];
 const price = escapeHtml(course.price || "");
 
-const priceHtml = price 
-? `<p class="gh-mobile-course-item__price">Starts at: ${price}</p>` 
-: '';
+// Generate country flags
+const countryFlags_html = countries.slice(0, 5).map(country => {
+const flag = countryFlags[country] || "🌍";
+return `<span class="gh-country-flag" title="${country}">${flag}</span>`;
+}).join("");
+
+// Show "+ X more" if there are more than 5 countries
+const moreCountries = countries.length > 5 ? 
+`<span class="gh-country-more">+${countries.length - 5} more</span>` : '';
 
 return `
-     <div class="gh-mobile-course-item">
-       <p class="gh-mobile-course-item__title">${title}</p>
-       ${priceHtml}
-     </div>
+     <article class="gh-card gh-card--course">
+       <h3 class="gh-card__title">${title}</h3>
+       <div class="gh-card__details">
+         ${countries.length > 0 ? `
+           <div class="gh-card__meta">
+             <svg class="gh-icon gh-icon--location" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+             </svg>
+             <div class="gh-countries">
+               ${countryFlags_html}
+               ${moreCountries}
+             </div>
+           </div>
+         ` : ''}
+         ${price ? `
+           <div class="gh-card__meta">
+             <svg class="gh-icon gh-icon--price" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+               <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+             </svg>
+             <span>Starts at: <strong>${price}</strong></span>
+           </div>
+         ` : ''}
+       </div>
+     </article>
    `;
 });
 
-block.innerHTML = items.join("");
+block.innerHTML = cards.join("");
 removeSkeleton(block);
 };
 
@@ -239,35 +231,21 @@ renderEmpty(block);
 return;
 }
 
-const cards = events.slice(0, 2).map((event) => {
+const cards = events.slice(0, 4).map((event) => {
 const title = escapeHtml(event.title || "Event");
 const date = escapeHtml(event.date || event.starts_at || "");
-const location = escapeHtml(event.location || event.mode || "Online Event");
+const location = escapeHtml(event.location || event.mode || "");
 const href = event.url || event.cta_url || "#";
-const attendees = event.attendees || "25";
-const image = escapeHtml(event.image || event.thumbnail || "https://placehold.co/250x180?text=Event");
+const cta = escapeHtml(event.cta_label || "Register");
+const image = escapeHtml(event.image || event.thumbnail || "https://placehold.co/160x120?text=Event");
 
 return `
-     <article class="gh-mobile-event-card">
-       <img class="gh-mobile-event-card__image" src="${image}" alt="${title}">
-       <div class="gh-mobile-event-card__content">
-         <h3 class="gh-mobile-event-card__title">${title}</h3>
-         <div class="gh-mobile-event-card__meta">
-           <div class="gh-mobile-event-card__info">
-             <svg class="gh-mobile-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
-               <path d="M11.375 2.33337H2.625C1.93464 2.33337 1.375 2.89302 1.375 3.58337V11.6667C1.375 12.357 1.93464 12.9167 2.625 12.9167H11.375C12.0654 12.9167 12.625 12.357 12.625 11.6667V3.58337C12.625 2.89302 12.0654 2.33337 11.375 2.33337Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-               <path d="M9.5 1.08337V3.58337M4.5 1.08337V3.58337M1.375 6.08337H12.625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-             </svg>
-             <span>${date}</span>
-           </div>
-           <div class="gh-mobile-event-card__info">
-             <svg class="gh-mobile-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
-               <path d="M7 12.8333C10.2217 12.8333 12.8333 10.2217 12.8333 7C12.8333 3.77834 10.2217 1.16667 7 1.16667C3.77834 1.16667 1.16667 3.77834 1.16667 7C1.16667 10.2217 3.77834 12.8333 7 12.8333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-               <path d="M7 3.5V7H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-             </svg>
-             <span>${attendees} Interested</span>
-           </div>
-         </div>
+     <article class="gh-card gh-card--event">
+       <img class="gh-event__thumb" src="${image}" alt="${title}">
+       <div>
+         <p class="gh-card__title">${title}</p>
+         <p class="gh-card__meta">${date} · ${location}</p>
+         <a class="gh-button gh-button--ghost" href="${href}">${cta}</a>
        </div>
      </article>
    `;
@@ -283,17 +261,13 @@ renderEmpty(block);
 return;
 }
 
-const chips = categories.slice(0, 6).map((category) => {
+const chips = categories.map((category) => {
 const name = escapeHtml(category.name || "Category");
 const url = category.url || `/c/${category.slug}/${category.id}`;
-const icon = category.icon || "📚";
 
 return `
-     <a class="gh-mobile-category-chip" href="${url}">
-       <div class="gh-mobile-category-chip__icon">
-         <span>${icon}</span>
-       </div>
-       <div class="gh-mobile-category-chip__label">${name}</div>
+     <a class="gh-chip" href="${url}" target="_blank" rel="noopener">
+       ${name}
      </a>
    `;
 }).join("");
@@ -361,13 +335,61 @@ const isLoginRoute = (pageSetting = "both") => {
 };
 
 // Build login video HTML
-const buildLoginVideoHtml = (videoId) => {
-  if (!videoId) return "";
-  const escapedVideoId = escapeHtml(videoId);
+const buildVideoEmbedSrc = (videoInput) => {
+  const raw = (videoInput || "").trim();
+  if (!raw) {
+    return "";
+  }
+
+  const youtubeEmbed = (id) =>
+    id ? `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1` : "";
+
+  const isUrl = /^https?:\/\//i.test(raw);
+  if (!isUrl) {
+    return youtubeEmbed(raw);
+  }
+
+  try {
+    const parsed = new URL(raw, window.location.origin);
+    const host = parsed.hostname.toLowerCase();
+    const pathSegments = parsed.pathname.split("/").filter(Boolean);
+
+    if (host.includes("drive.google.com")) {
+      const driveMatch = parsed.pathname.match(/\/d\/([^/]+)/);
+      const driveId = driveMatch?.[1] || parsed.searchParams.get("id");
+      if (driveId) {
+        return `https://drive.google.com/file/d/${driveId}/preview`;
+      }
+    }
+
+    if (host.includes("youtu.be")) {
+      const shortId = pathSegments[0];
+      if (shortId) {
+        return youtubeEmbed(shortId);
+      }
+    }
+
+    if (host.includes("youtube.com")) {
+      const urlId = parsed.searchParams.get("v") || pathSegments.pop();
+      if (urlId) {
+        return youtubeEmbed(urlId);
+      }
+    }
+
+    return raw;
+  } catch (e) {
+    return raw;
+  }
+};
+
+const buildLoginVideoHtml = (videoIdOrUrl) => {
+  const videoSrc = buildVideoEmbedSrc(videoIdOrUrl);
+  if (!videoSrc) return "";
+  const escapedSrc = escapeHtml(videoSrc);
   return `
     <div class="gh-login-video">
       <iframe
-        src="https://www.youtube.com/embed/${escapedVideoId}?rel=0&modestbranding=1"
+        src="${escapedSrc}"
         title="Welcome Video"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -507,114 +529,72 @@ categories: [
 name: "Videshi Chai", 
 slug: "videshi-chai", 
 id: 190,
-url: "https://discussions.gyandhan.com/c/videshi-chai/190",
-icon: "🍵"
+url: "https://discussions.gyandhan.com/c/videshi-chai/190"
 },
 { 
 name: "Scholarships", 
 slug: "scholarships", 
 id: 53,
-url: "https://discussions.gyandhan.com/c/scholarships/53",
-icon: "🏠"
+url: "https://discussions.gyandhan.com/c/scholarships/53"
 },
 { 
 name: "Accommodation", 
 slug: "accommodation", 
 id: 214,
-url: "https://discussions.gyandhan.com/c/accommodation/214",
-icon: "🏡"
+url: "https://discussions.gyandhan.com/c/accommodation/214"
 },
 { 
 name: "University Discussions", 
 slug: "university-discussions", 
 id: 39,
-url: "https://discussions.gyandhan.com/c/university-discussions/39",
-icon: "📚"
+url: "https://discussions.gyandhan.com/c/university-discussions/39"
 },
 { 
 name: "Newsverse", 
 slug: "newsverse", 
 id: 52,
-url: "https://discussions.gyandhan.com/c/newsverse/52",
-icon: "📰"
+url: "https://discussions.gyandhan.com/c/newsverse/52"
 },
 { 
 name: "Articles", 
 slug: "articles", 
 id: 216,
-url: "https://discussions.gyandhan.com/c/articles/216",
-icon: "💧"
+url: "https://discussions.gyandhan.com/c/articles/216"
 },
 ],
 };
 
 const buildHomeHtml = (s, options = {}) => {
 const { isLoggedIn = false, signupUrl = SIGNUP_URL } = options;
+const stat1 = escapeHtml(s.hero_stat_1 || "");
+const stat2 = escapeHtml(s.hero_stat_2 || "");
+const stat3 = escapeHtml(s.hero_stat_3 || "");
 const heroPrimaryHref = escapeHtml(
 !isLoggedIn ? signupUrl : s.cta_primary_url || "/"
 );
+const heroSecondaryHref = escapeHtml(
+!isLoggedIn ? signupUrl : s.cta_secondary_url || "/"
+);
 
-// New mobile-first hero section
 const hero = `
-   <section class="gh-mobile-hero">
-     <div class="gh-mobile-hero__gradient"></div>
-     <div class="gh-mobile-hero__header"></div>
-     <div class="gh-mobile-hero__content">
-       <div class="gh-mobile-tag">
-         <span class="gh-mobile-tag__emoji">🎓</span>
-         <span class="gh-mobile-tag__text">Study Abroad Made Simple</span>
+   <section class="gh-hero gh-hero--background" style="background-image: url(${heroImageUrl});">
+     <div class="gh-hero__overlay"></div>
+     <div class="gh-hero__content">
+       <p class="gh-hero__eyebrow">GD Connect</p>
+       <h1>${escapeHtml(s.hero_title || "")}</h1>
+       <p class="gh-hero__subtitle">${escapeHtml(s.hero_subtitle || "")}</p>
+       <div class="gh-hero__actions">
+         <a class="gh-button gh-button--primary" href="${heroPrimaryHref}">${escapeHtml(
+           s.cta_primary_label || "Explore"
+         )}</a>
+         <a class="gh-button gh-button--ghost" href="${heroSecondaryHref}">${escapeHtml(
+           s.cta_secondary_label || "Join"
+         )}</a>
        </div>
-       <h1 class="gh-mobile-hero__title">Real Advise,<br>Actual Results</h1>
-       <p class="gh-mobile-hero__subtitle">Lorem ipsum dolor sit amet consectetur. Sagittis iaculis porta nunc magna aliquet volutpat.</p>
-       <a class="gh-mobile-button gh-mobile-button--primary" href="${heroPrimaryHref}">
-         <span>Button CTA</span>
-         <svg class="gh-mobile-button__icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-           <path d="M4.16669 10H15.8334M15.8334 10L10 4.16669M15.8334 10L10 15.8334" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-         </svg>
-       </a>
-     </div>
-     <div class="gh-mobile-hero__image">
-       <div class="gh-mobile-hero__image-overlay gh-mobile-hero__image-overlay--left">Lorem Ipsum</div>
-       <div class="gh-mobile-hero__image-overlay gh-mobile-hero__image-overlay--right">Lorem Ipsum</div>
-     </div>
-   </section>
- `;
-
-// Stats section - mobile design
-const stats = `
-   <section class="gh-mobile-stats">
-     <div class="gh-mobile-stat-card">
-       <div class="gh-mobile-stat-card__icon">
-         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-           <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-         </svg>
-       </div>
-       <div class="gh-mobile-stat-card__content">
-         <div class="gh-mobile-stat-card__value">4K+</div>
-         <div class="gh-mobile-stat-card__label">Active Members</div>
-       </div>
-     </div>
-     <div class="gh-mobile-stat-card">
-       <div class="gh-mobile-stat-card__icon">
-         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-           <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-         </svg>
-       </div>
-       <div class="gh-mobile-stat-card__content">
-         <div class="gh-mobile-stat-card__value">500+</div>
-         <div class="gh-mobile-stat-card__label">Alumni Mentors</div>
-       </div>
-     </div>
-     <div class="gh-mobile-stat-card">
-       <div class="gh-mobile-stat-card__icon">
-         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-           <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-           <path d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-         </svg>
-       </div>
-       <div class="gh-mobile-stat-card__content">
-         <div class="gh-mobile-stat-card__value">200+</div>
-         <div class="gh-mobile-stat-card__label">Event Hosted</div>
+       <div class="gh-hero__stats">
+         <div class="gh-stat">${stat1}</div>
+         <div class="gh-stat">${stat2}</div>
+         <div class="gh-stat">${stat3}</div>
        </div>
      </div>
    </section>
@@ -622,136 +602,137 @@ const stats = `
 
 const alumni = s.show_alumni_spotlight
 ? `
-   <section class="gh-mobile-section">
-     <div class="gh-mobile-section__header">
-       <h2 class="gh-mobile-section__title">Alumni Spotlight</h2>
+   <section class="gh-section">
+     <div class="gh-section__header">
+       <div>
+         <h1 class="gh-section__eyebrow">Alumni Spotlight</h1>
+         <h2>Talk to alumni</h2>
+         <p class="gh-section__sub">Get real advice from people who have been there.</p>
+       </div>
      </div>
-     <div class="gh-mobile-alumni-carousel gh-skeleton" data-block="alumni" data-endpoint="${escapeHtml(
+     <div class="gh-card-grid gh-card-grid--three gh-skeleton" data-block="alumni" data-endpoint="${escapeHtml(
        s.alumni_endpoint || ""
      )}">
-       <div class="gh-mobile-alumni-card"></div>
-       <div class="gh-mobile-alumni-card"></div>
-     </div>
-     <div class="gh-mobile-carousel-dots">
-       <span class="gh-mobile-carousel-dot gh-mobile-carousel-dot--active"></span>
-       <span class="gh-mobile-carousel-dot"></span>
-       <span class="gh-mobile-carousel-dot"></span>
+       <div class="gh-card gh-card--person"></div>
+       <div class="gh-card gh-card--person"></div>
+       <div class="gh-card gh-card--person"></div>
      </div>
    </section>`
 : "";
 
 const mostTalked = s.show_most_talked
 ? `
-   <section class="gh-mobile-section">
-     <div class="gh-mobile-section__header">
-       <h2 class="gh-mobile-section__title">Most Talked Topics</h2>
+   <section class="gh-section">
+     <div class="gh-section__header">
+       <div>
+         <h1 class="gh-section__eyebrow">Most Talked Topics</h1>
+         <h2>Trending conversations</h2>
+       </div>
+       <div class="gh-filter">
+         <select id="gh-trending-filter" data-period="">
+           <option value="">All time</option>
+           <option value='yearly'>Year</option>
+           <option value='quarterly'>Quarter</option>
+           <option value='monthly'>Month</option>
+           <option value='weekly'>Week</option>
+           <option value='daily'>Day</option>
+         </select>
+       </div>
      </div>
-     <div class="gh-mobile-topic-list gh-skeleton" data-block="most-talked" data-endpoint="${escapeHtml(
+     <div class="gh-card-grid gh-card-grid--three gh-skeleton" data-block="most-talked" data-endpoint="${escapeHtml(
        s.most_talked_endpoint || ""
      )}">
-       <div class="gh-mobile-topic-card"></div>
-       <div class="gh-mobile-topic-card"></div>
-       <div class="gh-mobile-topic-card"></div>
+       <div class="gh-card gh-card--topic"></div>
+       <div class="gh-card gh-card--topic"></div>
+       <div class="gh-card gh-card--topic"></div>
      </div>
    </section>`
 : "";
 
 const latest = s.show_latest
 ? `
-   <section class="gh-mobile-section">
-     <div class="gh-mobile-section__header">
-       <h2 class="gh-mobile-section__title">Latest</h2>
+   <div class="gh-section__col">
+     <div class="gh-section__header">
+       <div>
+         <h1 class="gh-section__eyebrow">Latest</h1>
+         <h2>Topics You May Have Missed</h2>
+       </div>
+       <a class="gh-link" href="/latest">View all</a>
      </div>
-     <div class="gh-mobile-latest-grid gh-skeleton" data-block="latest" data-endpoint="${escapeHtml(
+     <div class="gh-card-list gh-skeleton" data-block="latest" data-endpoint="${escapeHtml(
        s.latest_endpoint || "/latest.json"
      )}">
-       <div class="gh-mobile-latest-card"></div>
-       <div class="gh-mobile-latest-card"></div>
+       <div class="gh-card gh-card--topic"></div>
+       <div class="gh-card gh-card--topic"></div>
+       <div class="gh-card gh-card--topic"></div>
      </div>
-   </section>`
+   </div>`
 : "";
 
 const courses = s.show_popular_courses
 ? `
-   <section class="gh-mobile-section">
-     <div class="gh-mobile-section__header">
-       <h2 class="gh-mobile-section__title">Most Popular Courses</h2>
-     </div>
-     <div class="gh-mobile-tabs">
-       <div class="gh-mobile-tabs__row">
-         <button class="gh-mobile-tab gh-mobile-tab--active" data-country="USA">
-           <span class="gh-mobile-tab__flag">🇺🇸</span>
-           <span class="gh-mobile-tab__label">USA</span>
-         </button>
-         <button class="gh-mobile-tab" data-country="Germany">
-           <span class="gh-mobile-tab__flag">🇩🇪</span>
-           <span class="gh-mobile-tab__label">Germany</span>
-         </button>
-         <button class="gh-mobile-tab" data-country="UK">
-           <span class="gh-mobile-tab__flag">🇬🇧</span>
-           <span class="gh-mobile-tab__label">UK</span>
-         </button>
-       </div>
-       <div class="gh-mobile-tabs__row">
-         <button class="gh-mobile-tab" data-country="Ireland">
-           <span class="gh-mobile-tab__flag">🇮🇪</span>
-           <span class="gh-mobile-tab__label">Ireland</span>
-         </button>
-         <button class="gh-mobile-tab" data-country="Netherland">
-           <span class="gh-mobile-tab__flag">🇳🇱</span>
-           <span class="gh-mobile-tab__label">Netherland</span>
-         </button>
-         <button class="gh-mobile-tab" data-country="Canada">
-           <span class="gh-mobile-tab__flag">🇨🇦</span>
-           <span class="gh-mobile-tab__label">CANADA</span>
-         </button>
+   <div class="gh-section__col">
+     <div class="gh-section__header">
+       <div>
+         <h1 class="gh-section__eyebrow">Most Popular Courses</h1>
+         <h2>Courses loved by peers</h2>
        </div>
      </div>
-     <div class="gh-mobile-course-list gh-skeleton" data-block="popular-courses" data-endpoint="${escapeHtml(
+     <div class="gh-card-list gh-skeleton" data-block="popular-courses" data-endpoint="${escapeHtml(
        s.popular_courses_endpoint || ""
      )}">
-       <div class="gh-mobile-course-item"></div>
-       <div class="gh-mobile-course-item"></div>
-       <div class="gh-mobile-course-item"></div>
+       <div class="gh-card gh-card--course"></div>
+       <div class="gh-card gh-card--course"></div>
+       <div class="gh-card gh-card--course"></div>
      </div>
-   </section>`
+   </div>`
 : "";
 
 const events = s.show_events
 ? `
-   <section class="gh-mobile-section">
-     <div class="gh-mobile-section__header">
-       <h2 class="gh-mobile-section__title">Upcoming Events</h2>
+   <div class="gh-section__col">
+     <div class="gh-section__header">
+       <div>
+         <h1 class="gh-section__eyebrow">Upcoming Events</h1>
+         <h2>Upcoming Events</h2>
+       </div>
      </div>
-     <div class="gh-mobile-event-carousel gh-skeleton" data-block="events" data-endpoint="${escapeHtml(
+     <div class="gh-card-list gh-card-list--events gh-skeleton" data-block="events" data-endpoint="${escapeHtml(
        s.events_endpoint || ""
      )}">
-       <div class="gh-mobile-event-card"></div>
-       <div class="gh-mobile-event-card"></div>
+       <div class="gh-card gh-card--event"></div>
+       <div class="gh-card gh-card--event"></div>
      </div>
-   </section>`
+   </div>`
 : "";
 
 const categories = s.show_categories
 ? `
-   <section class="gh-mobile-section">
-     <div class="gh-mobile-section__header">
-       <h2 class="gh-mobile-section__title">Explore Categories</h2>
+   <div class="gh-section__col">
+     <div class="gh-section__header">
+       <div>
+         <h1 class="gh-section__eyebrow">Explore Categories</h1>
+         <h2>Browse by interest</h2>
+       </div>
+       <a class="gh-link" href="/categories">View all</a>
      </div>
-     <div class="gh-mobile-category-grid gh-skeleton" data-block="categories" data-endpoint="${escapeHtml(
+     <div class="gh-category-grid gh-skeleton" data-block="categories" data-endpoint="${escapeHtml(
        s.categories_endpoint || "/categories.json"
      )}">
-       <div class="gh-mobile-category-chip"></div>
-       <div class="gh-mobile-category-chip"></div>
-       <div class="gh-mobile-category-chip"></div>
-       <div class="gh-mobile-category-chip"></div>
-       <div class="gh-mobile-category-chip"></div>
-       <div class="gh-mobile-category-chip"></div>
+       <div class="gh-chip"></div>
+       <div class="gh-chip"></div>
+       <div class="gh-chip"></div>
+       <div class="gh-chip"></div>
+       <div class="gh-chip"></div>
+       <div class="gh-chip"></div>
      </div>
-   </section>`
+   </div>`
 : "";
 
-return `${hero}${stats}${alumni}${mostTalked}${latest}${courses}${events}${categories}`;
+const twoCol1 = latest || courses ? `<section class="gh-section gh-section--two-col">${latest}${courses}</section>` : "";
+const twoCol2 = events || categories ? `<section class="gh-section gh-section--two-col">${events}${categories}</section>` : "";
+
+return `${hero}${alumni}${mostTalked}${twoCol1}${twoCol2}`;
 };
 
 export default apiInitializer("0.11.3", (api) => {
