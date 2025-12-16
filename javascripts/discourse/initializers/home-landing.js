@@ -1038,13 +1038,26 @@ logAlumniHelper();
     const videoHtml = buildLoginVideoHtml(settings.login_video_youtube_id);
     if (!videoHtml) return;
 
-    // Function to inject video into the login modal
+    // Function to inject video into the login/signup layouts
     const tryInjectVideo = () => {
       // Check if already injected
       if (document.querySelector(".gh-login-video")) return true;
 
-      // Try to find the login modal
-      const loginModal = document.querySelector(".login-modal, .d-modal.login-modal, #login-form, .login-modal-body");
+      // Try to find the login/signup container
+      const loginModal = document.querySelector(
+        [
+          ".login-modal",
+          ".d-modal.login-modal",
+          "#login-form",
+          ".login-modal-body",
+          ".signup-panel",
+          ".create-account",
+          ".new-account",
+          "#new-account",
+          "#signup-form",
+          "form#create-account"
+        ].join(", ")
+      );
       if (!loginModal) return false;
 
       // Desktop: inject into right pane (above social logins)
@@ -1056,7 +1069,9 @@ logAlumniHelper();
       }
 
       // Mobile/Alternative: inject after welcome header or at the top of form
-      const welcomeHeader = loginModal.querySelector(".login-welcome-header, .login-title, .modal-header");
+      const welcomeHeader = loginModal.querySelector(
+        ".login-welcome-header, .login-title, .modal-header, .create-account h2, .signup-panel h2"
+      );
       if (welcomeHeader && !welcomeHeader.parentElement.querySelector(".gh-login-video")) {
         welcomeHeader.insertAdjacentHTML("afterend", videoHtml);
         console.log("[GD Connect Theme] Login video injected (mobile - after header)");
@@ -1064,7 +1079,7 @@ logAlumniHelper();
       }
 
       // Fallback: inject at the beginning of the modal body
-      const modalBody = loginModal.querySelector(".modal-body, .login-form");
+      const modalBody = loginModal.querySelector(".modal-body, .login-form, form#create-account, #new-account");
       if (modalBody && !modalBody.querySelector(".gh-login-video")) {
         modalBody.insertAdjacentHTML("afterbegin", videoHtml);
         console.log("[GD Connect Theme] Login video injected (fallback - modal body)");
