@@ -924,7 +924,12 @@ export default apiInitializer("0.11.3", (api) => {
       return;
     }
     container.style.display = "block";
-    if (!container.dataset.hydrated) {
+
+    // If container already contains the hero markup, avoid injecting another.
+    const hasHero = Boolean(container.querySelector('.gh-hero'));
+
+    // If not hydrated and no hero, build and hydrate.
+    if (!container.dataset.hydrated && !hasHero) {
       container.innerHTML = buildHomeHtml(settings, {
         isLoggedIn: isUserLoggedIn(),
         signupUrl: SIGNUP_URL,
@@ -934,7 +939,19 @@ export default apiInitializer("0.11.3", (api) => {
 
       // Setup event delegation for message buttons on the container
       attachMessageHandlers(container, { signupUrl: SIGNUP_URL });
+      return;
     }
+
+    // If the container already has hero markup but is not hydrated, run hydrate
+    // to attach dynamic blocks and event handlers without replacing existing HTML.
+    if (!container.dataset.hydrated && hasHero) {
+      hydrate(container);
+      attachMessageHandlers(container, { signupUrl: SIGNUP_URL });
+      container.dataset.hydrated = "true";
+      return;
+    }
+
+    // If already hydrated, do nothing (prevents duplicates)
   };
 
   // Helper to log available categories for theme configuration
