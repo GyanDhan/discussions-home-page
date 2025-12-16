@@ -24,6 +24,14 @@ alumni_usernames:
   list: true
   default: ""
   description: "Comma-separated list of usernames to feature in alumni spotlight (max 6). Example: john_doe,jane_smith,alumni_user. Leave empty to use alumni_endpoint. Open browser console on homepage to see configuration helper."
+
+hero_variant:
+  type: enum
+  default: "figma"
+  choices:
+    - figma
+    - background
+  description: "Visual variant for the hero section (figma = new desktop style, background = background image style)"
 alumni_endpoint:
   default: ""
   description: "Optional external API endpoint for alumni data. If alumni_usernames is set, this will be ignored and user profiles will be fetched instead."

@@ -1,6 +1,7 @@
 import { apiInitializer } from "discourse/lib/api";
 
-const heroImageUrl = 'https://gyandhan.s3.ap-south-1.amazonaws.com/uploads/gyandhan_asset/document/15434/GDC_Banner__1__52463ab7818b22c0c1bf.png';
+// Default mock hero image (used when theme setting doesn't provide one)
+const heroImageUrl = 'https://placehold.co/1200x800?text=Hero+Image&bg=E8F6F5&fg=0CA08E';
 const SIGNUP_URL = "/signup";
 const escapeHtml = (value) =>
   (value || "")
@@ -570,33 +571,53 @@ const buildHomeHtml = (s, options = {}) => {
   const heroAlt = escapeHtml(s.hero_image_alt || "Hero image");
   const heroStats = buildHeroStats([stat1, stat2, stat3]);
 
+  // Allow selecting hero variant via `hero_variant` theme setting.
+  const heroVariant = String(s.hero_variant || "figma").toLowerCase();
+  const heroClass = heroVariant === "background" ? "gh-hero gh-hero--background" : "gh-hero gh-hero--figma";
+  const heroImage = escapeHtml(s.hero_image_url || s.hero_image || heroImageUrl);
+
   const hero = `
-    <section class="gh-hero">
-      <div class="gh-hero__glow"></div>
-      <div class="gh-hero__inner">
-        <div class="gh-hero__copy">
-          <p class="gh-hero__eyebrow">GD Connect</p>
-          <h1>${escapeHtml(s.hero_title || "")}</h1>
-          <p class="gh-hero__subtitle">${escapeHtml(s.hero_subtitle || "")}</p>
-          <div class="gh-hero__actions">
-            <a class="gh-button gh-button--primary" href="${heroPrimaryHref}">${escapeHtml(
-              s.cta_primary_label || "Explore"
-            )}</a>
-            <a class="gh-button gh-button--ghost" href="${heroSecondaryHref}">${escapeHtml(
-              s.cta_secondary_label || "Join"
-            )}</a>
-          </div>
-          ${heroStats}
+  <section class="${heroClass}" data-hero-variant="${escapeHtml(heroVariant)}">
+    <div class="gh-hero__inner">
+      <div class="gh-hero__content">
+        <span class="gh-hero__eyebrow">GD Connect</span>
+
+        <h1 class="gh-hero__title">
+          ${escapeHtml(s.hero_title || "")}
+        </h1>
+
+        <p class="gh-hero__subtitle">
+          ${escapeHtml(s.hero_subtitle || "")}
+        </p>
+
+        <div class="gh-hero__actions">
+          <a class="gh-button gh-button--primary" href="${heroPrimaryHref}">
+            ${escapeHtml(s.cta_primary_label || "Explore")}
+          </a>
+
+          <a class="gh-button gh-button--ghost" href="${heroSecondaryHref}">
+            ${escapeHtml(s.cta_secondary_label || "Join")}
+          </a>
         </div>
-        <div class="gh-hero__visual">
-          <div class="gh-hero__image" style="background-image: url(${heroImageUrl});" role="img" aria-label="${heroAlt}"></div>
-          <div class="gh-hero__badge">
-            <span>Community powered journeys</span>
-          </div>
+
+        ${heroStats}
+      </div>
+
+      <div class="gh-hero__visual">
+        <div
+          class="gh-hero__image"
+          style="background-image:url(${heroImage})"
+          role="img"
+          aria-label="${heroAlt}"
+        ></div>
+
+        <div class="gh-hero__badge">
+          Community powered journeys
         </div>
       </div>
-    </section>
-  `;
+    </div>
+  </section>
+`;
 
   const alumni = s.show_alumni_spotlight
     ? `
