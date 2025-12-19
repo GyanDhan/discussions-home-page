@@ -1087,6 +1087,15 @@ font-size: 1rem;
   margin-top: 0;
 }
 
+/* Ensure signup form stays on the left and video stays on the right */
+.gh-login-video-layout .login-left-side {
+  order: 1;
+}
+
+.gh-login-video-layout .login-right-side {
+  order: 2;
+}
+
 /* Mobile: video after welcome header */
 .login-modal .gh-login-video,
 .d-modal.login-modal .gh-login-video {
