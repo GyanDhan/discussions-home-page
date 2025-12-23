@@ -599,6 +599,36 @@ const hero = `
      </div>
    </section>
  `;
+const studyAbroadQuiz = `
+  <section class="gh-section gh-section--country-predictor">
+    <div class="gh-section__header">
+      <div>
+        <h1 class="gh-section__eyebrow">Country Predictor</h1>
+        <h2>Not sure which country actually fits your study abroad plans?</h2>
+
+        <p class="gh-section__sub">
+          Answer 10 quick questions and let our <strong>Country Predictor AI</strong>
+          shortlist the best-fit countries for you—based on your profile, goals,
+          and budget.
+        </p>
+
+        <p class="gh-section__sub">
+          You’ll also see your top course options, expected ROI, and how each
+          country aligns with your long-term career plans.
+        </p>
+
+        <a
+          href="https://gddev.gdinternal.com/online-test"
+          class="gh-button gh-button--primary"
+          style="margin-top:18px; display:inline-block;"
+        >
+          Check it out now
+        </a>
+      </div>
+    </div>
+  </section>
+`;
+
 
 const alumni = s.show_alumni_spotlight
 ? `
@@ -732,7 +762,7 @@ const categories = s.show_categories
 const twoCol1 = latest || courses ? `<section class="gh-section gh-section--two-col">${latest}${courses}</section>` : "";
 const twoCol2 = events || categories ? `<section class="gh-section gh-section--two-col">${events}${categories}</section>` : "";
 
-return `${hero}${alumni}${mostTalked}${twoCol1}${twoCol2}`;
+return `${hero}${studyAbroadQuiz}${alumni}${mostTalked}${twoCol1}${twoCol2}`;
 };
 
 export default apiInitializer("0.11.3", (api) => {
