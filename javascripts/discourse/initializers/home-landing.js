@@ -1060,10 +1060,15 @@ logAlumniHelper();
       );
       if (!loginModal) return false;
 
+      const applyLayoutClass = () => {
+        loginModal.classList.add("gh-login-video-layout");
+      };
+
       // Desktop: inject into right pane (above social logins)
       const rightSide = loginModal.querySelector(".login-right-side");
       if (rightSide && !rightSide.querySelector(".gh-login-video")) {
         rightSide.insertAdjacentHTML("afterbegin", videoHtml);
+        applyLayoutClass();
         console.log("[GD Connect Theme] Login video injected (desktop - right side)");
         return true;
       }
@@ -1074,6 +1079,7 @@ logAlumniHelper();
       );
       if (welcomeHeader && !welcomeHeader.parentElement.querySelector(".gh-login-video")) {
         welcomeHeader.insertAdjacentHTML("afterend", videoHtml);
+        applyLayoutClass();
         console.log("[GD Connect Theme] Login video injected (mobile - after header)");
         return true;
       }
@@ -1082,6 +1088,7 @@ logAlumniHelper();
       const modalBody = loginModal.querySelector(".modal-body, .login-form, form#create-account, #new-account");
       if (modalBody && !modalBody.querySelector(".gh-login-video")) {
         modalBody.insertAdjacentHTML("afterbegin", videoHtml);
+        applyLayoutClass();
         console.log("[GD Connect Theme] Login video injected (fallback - modal body)");
         return true;
       }
