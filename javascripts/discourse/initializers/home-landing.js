@@ -618,7 +618,7 @@ const studyAbroadQuiz = `
         </p>
 
         <a
-          href="https://gddev.gdinternal.com/online-test"
+          href="https://gyandhan.com/services/online-test"
           class="gh-button gh-button--primary"
           style="margin-top:18px; display:inline-block;"
         >
